@@ -1,14 +1,15 @@
 diff --git a/src/Plugin/Mail/MailgunMail.php b/src/Plugin/Mail/MailgunMail.php
-index f703160b4..f46618697 100644
---- a/src/Plugin/Mail/MailgunMail.php
+index f46618697..883d83ba6 100644
+--- a//src/Plugin/Mail/MailgunMail.php
 +++ b/src/Plugin/Mail/MailgunMail.php
-@@ -234,6 +234,9 @@ protected function buildMessage(array $message) {
-       if (substr($key, 0, 2) == 'h:' || substr($key, 0, 2) == 'v:') {
+@@ -231,12 +231,9 @@ protected function buildMessage(array $message) {
          $mailgun_message[$key] = $value;
        }
-+      if($key == 'recipient-variables') {
-+        $mailgun_message[$key] = json_encode($value);
-+      }
+       // Check for custom MIME headers or custom JSON data.
+-      if (substr($key, 0, 2) == 'h:' || substr($key, 0, 2) == 'v:') {
++      if (substr($key, 0, 2) == 'h:' || substr($key, 0, 2) == 'v:' || $key == 'recipient-variables' || $key == 'template') {
+         $mailgun_message[$key] = $value;
+       }
      }
  
      // Mailgun will accept the message but will not send it.
