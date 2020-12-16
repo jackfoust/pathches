@@ -1,8 +1,8 @@
 diff --git a/src/Plugin/Mail/MailgunMail.php b/src/Plugin/Mail/MailgunMail.php
-index f46618697..883d83ba6 100644
---- a//src/Plugin/Mail/MailgunMail.php
+index f703160b4..883d83ba6 100644
+--- a/src/Plugin/Mail/MailgunMail.php
 +++ b/src/Plugin/Mail/MailgunMail.php
-@@ -231,12 +231,9 @@ protected function buildMessage(array $message) {
+@@ -231,7 +231,7 @@ protected function buildMessage(array $message) {
          $mailgun_message[$key] = $value;
        }
        // Check for custom MIME headers or custom JSON data.
@@ -11,5 +11,3 @@ index f46618697..883d83ba6 100644
          $mailgun_message[$key] = $value;
        }
      }
- 
-     // Mailgun will accept the message but will not send it.
