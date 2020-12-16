@@ -1,4 +1,4 @@
-diff --git a/web/modules/contrib/mailgun/src/Plugin/Mail/MailgunMail.php b/web/modules/contrib/mailgun/src/Plugin/Mail/MailgunMail.php
+diff --git a/src/Plugin/Mail/MailgunMail.php b/src/Plugin/Mail/MailgunMail.php
 index f703160b4..f46618697 100644
 --- a/web/modules/contrib/mailgun/src/Plugin/Mail/MailgunMail.php
 +++ b/web/modules/contrib/mailgun/src/Plugin/Mail/MailgunMail.php
