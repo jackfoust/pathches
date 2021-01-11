@@ -11,3 +11,13 @@ index f703160b4..883d83ba6 100644
          $mailgun_message[$key] = $value;
        }
      }
+@@ -234,6 +234,9 @@ protected function buildMessage(array $message) {
+       if (substr($key, 0, 2) == 'h:' || substr($key, 0, 2) == 'v:' || $key == 'recipient-variables' || $key == 'template') {
+         $mailgun_message[$key] = $value;
+       }
++      if ($key == 'template') {
++        unset($mailgun_message['html']);
++      }
+     }
+ 
+     // Mailgun will accept the message but will not send it.
