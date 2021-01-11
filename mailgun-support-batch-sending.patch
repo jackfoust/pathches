@@ -1,8 +1,8 @@
-diff --git a/src/Plugin/Mail/MailgunMail.php b/src/Plugin/Mail/MailgunMail.php
-index f703160b4..883d83ba6 100644
---- a/src/Plugin/Mail/MailgunMail.php
-+++ b/src/Plugin/Mail/MailgunMail.php
-@@ -231,7 +231,7 @@ protected function buildMessage(array $message) {
+diff --git a/web/modules/contrib/mailgun/src/Plugin/Mail/MailgunMail.php b/web/modules/contrib/mailgun/src/Plugin/Mail/MailgunMail.php
+index f703160b4..a653f28aa 100644
+--- a/web/modules/contrib/mailgun/src/Plugin/Mail/MailgunMail.php
++++ b/web/modules/contrib/mailgun/src/Plugin/Mail/MailgunMail.php
+@@ -231,9 +231,12 @@ protected function buildMessage(array $message) {
          $mailgun_message[$key] = $value;
        }
        // Check for custom MIME headers or custom JSON data.
@@ -10,13 +10,8 @@ index f703160b4..883d83ba6 100644
 +      if (substr($key, 0, 2) == 'h:' || substr($key, 0, 2) == 'v:' || $key == 'recipient-variables' || $key == 'template') {
          $mailgun_message[$key] = $value;
        }
-     }
-@@ -234,6 +234,9 @@ protected function buildMessage(array $message) {
-       if (substr($key, 0, 2) == 'h:' || substr($key, 0, 2) == 'v:' || $key == 'recipient-variables' || $key == 'template') {
-         $mailgun_message[$key] = $value;
-       }
-+      if ($key == 'template') {
-+        unset($mailgun_message['html']);
++      if($key == 'template') {
++        unset($message['html']);
 +      }
      }
  
