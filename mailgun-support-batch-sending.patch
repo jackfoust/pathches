@@ -11,7 +11,7 @@ index f703160b4..a653f28aa 100644
          $mailgun_message[$key] = $value;
        }
 +      if($key == 'template') {
-+        unset($message['html']);
++        unset($mailgun_message['html']);
 +      }
      }
  
