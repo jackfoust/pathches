@@ -1,0 +1,19 @@
+diff --git a/auto_entitylabel.module b/auto_entitylabel.module
+index 701a01f..5d50461 100644
+--- a/auto_entitylabel.module
++++ b/auto_entitylabel.module
+@@ -49,9 +49,11 @@ function auto_entitylabel_form_alter(&$form, FormStateInterface $form_state) {
+   if (isset($form['#entity_builders'])) {
+     /** @var \Drupal\Core\Entity\EntityFormInterface $formObject */
+     $formObject = $form_state->getFormObject();
+-    $entity = $formObject->getEntity();
+-    if ($entity instanceof ContentEntityInterface) {
+-      auto_entitylabel_prepare_entityform($form, $entity);
++    if($formObject instanceof \Drupal\Core\Entity\EntityFormInterface) {
++      $entity = $formObject->getEntity();
++      if ($entity instanceof ContentEntityInterface) {
++        auto_entitylabel_prepare_entityform($form, $entity);
++      }
+     }
+   }
+ }
