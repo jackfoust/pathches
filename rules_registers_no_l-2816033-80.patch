@@ -1,0 +1,174 @@
+diff --git a/rules.drush.inc b/rules.drush.inc
+index 0386687a..9e62be6a 100644
+--- a/rules.drush.inc
++++ b/rules.drush.inc
+@@ -6,6 +6,17 @@
+  */
+ 
+ use Drupal\Core\Serialization\Yaml;
++use Drupal\rules\Event\DrushInitEvent;
++
++/**
++ * Implements hook_drush_init().
++ */
++function rules_drush_init() {
++  if (\Drupal::hasService('event_dispatcher')) {
++    $event = new DrushInitEvent();
++    \Drupal::service('event_dispatcher')->dispatch($event::EVENT_NAME, $event);
++  }
++}
+ 
+ /**
+  * Implements hook_drush_command().
+diff --git a/rules.services.yml b/rules.services.yml
+index 7e98eda7..7de7769c 100644
+--- a/rules.services.yml
++++ b/rules.services.yml
+@@ -36,7 +36,7 @@ services:
+       - { name: logger }
+   rules.event_subscriber:
+     class: Drupal\rules\EventSubscriber\GenericEventSubscriber
+-    arguments: ['@entity_type.manager', '@plugin.manager.rules_event', '@rules.component_repository', '@logger.channel.rules_debug']
++    arguments: ['@entity_type.manager', '@plugin.manager.rules_event', '@rules.component_repository', '@event_dispatcher', '@module_handler', '@logger.channel.rules_debug',]
+     tags:
+       - { name: event_subscriber }
+   rules.redirect_event_subscriber:
+diff --git a/src/Event/DrushInitEvent.php b/src/Event/DrushInitEvent.php
+new file mode 100644
+index 00000000..5cf92925
+--- /dev/null
++++ b/src/Event/DrushInitEvent.php
+@@ -0,0 +1,16 @@
++<?php
++
++namespace Drupal\rules\Event;
++
++use Symfony\Component\EventDispatcher\GenericEvent;
++
++/**
++ * Event that is fired when Drush tasks are performed.
++ *
++ * @see rules_drush_init()
++ */
++class DrushInitEvent extends GenericEvent {
++
++  const EVENT_NAME = 'rules_drush_init';
++
++}
+diff --git a/src/EventSubscriber/GenericEventSubscriber.php b/src/EventSubscriber/GenericEventSubscriber.php
+index d82563c3..3d056799 100644
+--- a/src/EventSubscriber/GenericEventSubscriber.php
++++ b/src/EventSubscriber/GenericEventSubscriber.php
+@@ -8,9 +8,13 @@ use Drupal\rules\Context\ExecutionState;
+ use Drupal\rules\Core\RulesConfigurableEventHandlerInterface;
+ use Drupal\rules\Core\RulesEventManager;
+ use Drupal\rules\Engine\RulesComponentRepositoryInterface;
++use Drupal\rules\Event\DrushInitEvent;
++use Drupal\Core\Extension\ModuleHandlerInterface;
+ use Symfony\Component\EventDispatcher\Event;
++use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+ use Symfony\Component\EventDispatcher\GenericEvent;
++use Symfony\Component\HttpKernel\KernelEvents;
+ 
+ /**
+  * Subscribes to Symfony events and maps them to Rules events.
+@@ -38,6 +42,20 @@ class GenericEventSubscriber implements EventSubscriberInterface {
+    */
+   protected $componentRepository;
+ 
++  /**
++   * The eventDispatcher service.
++   *
++   * @var \Symfony\Component\EventDispatcher\EventDispatcherInterface
++   */
++  protected $eventDispatcher;
++
++  /**
++   * A ModuleHandler.
++   *
++   * @var \Drupal\Core\Extension\ModuleHandlerInterface
++   */
++  protected $moduleHandler;
++
+   /**
+    * The rules debug logger channel.
+    *
+@@ -45,6 +63,19 @@ class GenericEventSubscriber implements EventSubscriberInterface {
+    */
+   protected $rulesDebugLogger;
+ 
++  /**
++   * Events to subscribe if container is not available. See #2816033.
++   *
++   * @var array
++   */
++  private static $staticEvents = [
++    KernelEvents::CONTROLLER => ['registerDynamicEvents', 100],
++    KernelEvents::REQUEST => ['registerDynamicEvents', 100],
++    KernelEvents::TERMINATE => ['registerDynamicEvents', 100],
++    KernelEvents::VIEW => ['registerDynamicEvents', 100],
++    DrushInitEvent::EVENT_NAME => ['registerDynamicEvents', 100],
++  ];
++
+   /**
+    * Constructor.
+    *
+@@ -54,13 +85,24 @@ class GenericEventSubscriber implements EventSubscriberInterface {
+    *   The Rules event manager.
+    * @param \Drupal\rules\Engine\RulesComponentRepositoryInterface $component_repository
+    *   The component repository.
++   * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $event_dispatcher
++   *   The event dispatcher.
++   * @param \Drupal\Core\Extension\ModuleHandlerInterface $module_handler
++   *   The module handler
+    * @param \Drupal\Core\Logger\LoggerChannelInterface $logger
+    *   The Rules debug logger channel.
+    */
+-  public function __construct(EntityTypeManagerInterface $entity_type_manager, RulesEventManager $event_manager, RulesComponentRepositoryInterface $component_repository, LoggerChannelInterface $logger) {
++  public function __construct(EntityTypeManagerInterface $entity_type_manager,
++                              RulesEventManager $event_manager,
++                              RulesComponentRepositoryInterface $component_repository,
++                              EventDispatcherInterface $event_dispatcher,
++                              ModuleHandlerInterface $module_handler,
++                              LoggerChannelInterface $logger) {
+     $this->entityTypeManager = $entity_type_manager;
+     $this->eventManager = $event_manager;
+     $this->componentRepository = $component_repository;
++    $this->eventDispatcher = $event_dispatcher;
++    $this->moduleHandler = $module_handler;
+     $this->rulesDebugLogger = $logger;
+   }
+ 
+@@ -76,7 +118,7 @@ class GenericEventSubscriber implements EventSubscriberInterface {
+     // method could be called early when the container is built, so the state
+     // service might not always be available.
+     if (!\Drupal::hasService('state')) {
+-      return [];
++      return self::$staticEvents;
+     }
+ 
+     // Since we cannot access the reaction rule config storage here we have to
+@@ -94,6 +136,22 @@ class GenericEventSubscriber implements EventSubscriberInterface {
+     return $events;
+   }
+ 
++  /**
++   * Rebuilds container when dynamic rule eventsubscribers are not registered.
++   *
++   * @param \Symfony\Component\EventDispatcher\Event $event
++   *   The event object.
++   * @param string $event_name
++   *   The event name.
++   */
++  public function registerDynamicEvents(Event $event, $event_name) {
++    foreach (self::$staticEvents as $old_event_name => $method) {
++      $this->eventDispatcher->removeListener($old_event_name, [$this, $method[0]]);
++    }
++    $this->eventDispatcher->addSubscriber($this);
++    $this->moduleHandler->reload();
++  }
++
+   /**
+    * Reacts on the given event and invokes configured reaction rules.
+    *
