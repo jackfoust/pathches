@@ -1,0 +1,13 @@
+diff --git a/src/Element/WebformSignature.php b/src/Element/WebformSignature.php
+index dfbaad266..eb1885fc4 100644
+--- a/src/Element/WebformSignature.php
++++ b/src/Element/WebformSignature.php
+@@ -63,7 +63,7 @@ class WebformSignature extends FormElement {
+    */
+   public static function preRenderWebformSignature(array $element) {
+     $element['#attributes']['type'] = 'hidden';
+-    Element::setAttributes($element, ['name', 'value']);
++    Element::setAttributes($element, ['id', 'name', 'value']);
+     static::setAttributes($element, ['js-webform-signature', 'form-webform-signature']);
+ 
+     $build = [
