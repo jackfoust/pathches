@@ -1,0 +1,13 @@
+diff --git a/src/MigrationPluginsAlterer.php b/src/MigrationPluginsAlterer.php
+index f749dde..8b450a3 100644
+--- a/src/MigrationPluginsAlterer.php
++++ b/src/MigrationPluginsAlterer.php
+@@ -11,7 +11,7 @@ use Drupal\paragraphs\Plugin\migrate\field\FieldCollection;
+  */
+ final class MigrationPluginsAlterer {
+ 
+-  use MigrationDeriverTrait;
++  //use MigrationDeriverTrait;
+ 
+   /**
+    * Paragraphs' logger channel.
