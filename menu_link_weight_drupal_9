@@ -1,0 +1,18 @@
+diff --git a/src/MenuLinkWeightServiceProvider.php b/src/MenuLinkWeightServiceProvider.php
+index 58a4090..6135005 100644
+--- a/src/MenuLinkWeightServiceProvider.php
++++ b/src/MenuLinkWeightServiceProvider.php
+@@ -23,9 +23,11 @@ class MenuLinkWeightServiceProvider extends ServiceProviderBase {
+   public function alter(ContainerBuilder $container) {
+     $settings = BootstrapConfigStorageFactory::get()->read('menu_link_weight.settings');
+     $modules = $container->getParameter('container.modules');
+-    if ($settings['menu_parent_form_selector'] === 'cshs' && isset($modules['cshs'])) {
+-      $defintion = $container->getDefinition('menu.parent_form_selector');
+-      $defintion->setClass(CshsMenuParentFormSelector::class);
++    if (isset($modules['cshs']) && isset($settings['menu_parent_form_selector'])) {
++      if ($settings['menu_parent_form_selector'] === 'cshs') {
++        $defintion = $container->getDefinition('menu.parent_form_selector');
++        $defintion->setClass(CshsMenuParentFormSelector::class);
++      }
+     }
+   }
