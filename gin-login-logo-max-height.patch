@@ -1,14 +1,12 @@
 diff --git a/dist/css/login.css b/dist/css/login.css
-index 7d4408e..d838dab 100644
+index 17b8065..360bc64 100644
 --- a/dist/css/login.css
 +++ b/dist/css/login.css
-@@ -129,6 +129,9 @@ body.path-user .user-form-page__user-form img {
-   width: 100%;
-   max-height: 40px;
+@@ -240,3 +240,6 @@ body.gin-login .page-wrapper {
+ #sliding-popup {
+   display: none !important;
  }
 +.toolbar-logo img {
 +  max-height: 200px !important;
 +}
- body.path-user .user-form-page__wallpaper {
-   display: none;
-   pointer-events: none;
+\ No newline at end of file
