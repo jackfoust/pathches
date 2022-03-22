@@ -1,0 +1,13 @@
+diff --git a/modules/webform_templates/src/Controller/WebformTemplatesController.php b/modules/webform_templates/src/Controller/WebformTemplatesController.php
+index 7681bbe4c..59e3d3381 100644
+--- a/modules/webform_templates/src/Controller/WebformTemplatesController.php
++++ b/modules/webform_templates/src/Controller/WebformTemplatesController.php
+@@ -226,7 +226,7 @@ class WebformTemplatesController extends ControllerBase implements ContainerInje
+       $query->condition('category', $category);
+     }
+ 
+-    $query->sort('title');
++    $query->sort('weight');
+ 
+     $entity_ids = $query->execute();
+     if (empty($entity_ids)) {
