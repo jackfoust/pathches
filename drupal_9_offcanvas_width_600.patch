@@ -1,0 +1,13 @@
+diff --git a/core/lib/Drupal/Core/Ajax/OpenOffCanvasDialogCommand.php b/core/lib/Drupal/Core/Ajax/OpenOffCanvasDialogCommand.php
+index eb868aaf5f..9c840ca629 100644
+--- a/core/lib/Drupal/Core/Ajax/OpenOffCanvasDialogCommand.php
++++ b/core/lib/Drupal/Core/Ajax/OpenOffCanvasDialogCommand.php
+@@ -12,7 +12,7 @@ class OpenOffCanvasDialogCommand extends OpenDialogCommand {
+   /**
+    * The dialog width to use if none is provided.
+    */
+-  const DEFAULT_DIALOG_WIDTH = 300;
++  const DEFAULT_DIALOG_WIDTH = 600;
+ 
+   /**
+    * Constructs an OpenOffCanvasDialogCommand object.
