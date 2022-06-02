@@ -1,0 +1,13 @@
+diff --git a/src/OAuth2/OpenID/Controller/UserInfoController.php b/src/OAuth2/OpenID/Controller/UserInfoController.php
+index c489b7a..33b6be4 100644
+--- a/src/OAuth2/OpenID/Controller/UserInfoController.php
++++ b/src/OAuth2/OpenID/Controller/UserInfoController.php
+@@ -46,7 +46,7 @@ class UserInfoController extends ResourceController implements UserInfoControlle
+      */
+     public function handleUserInfoRequest(RequestInterface $request, ResponseInterface $response)
+     {
+-        if (!$this->verifyResourceRequest($request, $response, 'openid')) {
++        if (!$this->verifyResourceRequest($request, $response, 'ifttt')) {
+             return;
+         }
+ 
