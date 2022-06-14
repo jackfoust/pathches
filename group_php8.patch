@@ -1,0 +1,40 @@
+diff --git a/composer.json b/composer.json
+index 5ec505a0..7762ac09 100644
+--- a/composer.json
++++ b/composer.json
+@@ -288,9 +288,6 @@
+       "drupal/fullcalendar_view": {
+         "3243435 - Switch to list view on mobile": "https://www.drupal.org/files/issues/2022-03-06/fullcalendar_view-default-mobile-view-3243435.patch"
+       },
+-      "drupal/group": {
+-        "3210808 - uasort deprecation in PHP 8": "https://www.drupal.org/files/issues/2021-04-26/uasort-comparison-3210808-2.patch"
+-      },
+       "drupal/dashboards": {
+         "3277709 - small screen stacking issue with reversed layouts": "https://www.drupal.org/files/issues/2022-04-28/dashboards_reversed_layout_flex_direction.patch"
+       }
+diff --git a/composer.lock b/composer.lock
+index 0c6ff6ce..ae1bbff7 100644
+--- a/composer.lock
++++ b/composer.lock
+@@ -4,7 +4,7 @@
+         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+         "This file is @generated automatically"
+     ],
+-    "content-hash": "06d439e1f78e0ad184ab4e027f04db00",
++    "content-hash": "e13526df23a2afeea5aff2180d45aafc",
+     "packages": [
+         {
+             "name": "asm89/stack-cors",
+diff --git a/web/sites/default/services.yml b/web/sites/default/services.yml
+index 67c20b45..fd49e3ff 100755
+--- a/web/sites/default/services.yml
++++ b/web/sites/default/services.yml
+@@ -55,7 +55,7 @@ parameters:
+     #
+     # Not recommended in production environments
+     # @default false
+-    debug: false
++    debug: true
+     # Twig auto-reload:
+     #
+     # Automatically recompile Twig templates whenever the source code changes.
