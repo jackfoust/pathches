@@ -13,7 +13,7 @@ index a457c19..231b443 100644
        $this->hasRendered = TRUE;
 +      if(!empty($str) && str_contains($str,'webform-element')) {
 +        $font = $this->dompdf->getFontMetrics()->get_font("helvetica", "regular");
-+        $this->dompdf->getCanvas()->page_text(6, 6, "DOCUMENT ID: $timestamp", $font, 10, array(0,0,0));
++        $this->dompdf->getCanvas()->page_text(6, 6, "DOCUMENT ID: $timestamp - Page {PAGE_NUM} of {PAGE_COUNT}", $font, 10, array(0,0,0));
 +      }
      }
    }
