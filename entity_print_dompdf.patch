@@ -1,17 +1,20 @@
 diff --git a/src/Plugin/EntityPrint/PrintEngine/DomPdf.php b/src/Plugin/EntityPrint/PrintEngine/DomPdf.php
-index a457c19..f41dab1 100644
+index a457c19..231b443 100644
 --- a/src/Plugin/EntityPrint/PrintEngine/DomPdf.php
 +++ b/src/Plugin/EntityPrint/PrintEngine/DomPdf.php
-@@ -222,9 +222,12 @@ class DomPdf extends PdfEngineBase implements ContainerFactoryPluginInterface {
+@@ -222,9 +222,15 @@ class DomPdf extends PdfEngineBase implements ContainerFactoryPluginInterface {
     * Tell Dompdf to render the HTML into a PDF.
     */
    protected function doRender() {
 +    $timestamp = date('U').rand(111,999);
++    $str = $this->dompdf->getDom()->C14N();
      if (!$this->hasRendered) {
        $this->dompdf->render();
        $this->hasRendered = TRUE;
-+      $font = $this->dompdf->getFontMetrics()->get_font("helvetica", "regular");
-+      $this->dompdf->getCanvas()->page_text(6, 6, "DOCUMENT ID: $timestamp", $font, 10, array(0,0,0));
++      if(!empty($str) && str_contains($str,'webform-element')) {
++        $font = $this->dompdf->getFontMetrics()->get_font("helvetica", "regular");
++        $this->dompdf->getCanvas()->page_text(6, 6, "DOCUMENT ID: $timestamp", $font, 10, array(0,0,0));
++      }
      }
    }
  
