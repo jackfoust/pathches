@@ -20,14 +20,14 @@ index 64b53f7..d357ec8 100644
 +      type: text
 +      label: 'Message to display when in maintenance mode'
 diff --git a/gin_login.module b/gin_login.module
-index baa8d31..49cf141 100644
+index baa8d31..a4997a9 100644
 --- a/gin_login.module
 +++ b/gin_login.module
 @@ -196,6 +196,7 @@ function gin_login_preprocess_ginlogin(&$variables) {
  
    $variables['brand_image'] = '//source.unsplash.com/collection/9407737';
    $variables['brand_alt'] = 'Random image from unsplash';
-+  $variables['login_message'] = $configData['login_path'];
++  $variables['login_message'] = $configData['login_message'];
  
    if ($configData['brand_image']['use_default'] == "0") {
      if (isset($configData['brand_image']['path']) && !empty($configData['brand_image']['path'])) {
