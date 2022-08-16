@@ -64,7 +64,7 @@ index a81cf00..b1eed19 100644
        <main class="page-content clearfix" role="main">
          <div class="visually-hidden"><a id="main-content" tabindex="-1"></a></div>
 +        {% if login_message %}
-+          <div class="login-message">{{ login_message|e('html') }}</div>
++          <div class="login-message">{{ login_message|raw }}</div>
 +        {% endif %}
          {% block title %}
            <h1 class="page-title user-form-page__page-title">{{ 'Log in'|t }}</h1>
