@@ -1,0 +1,71 @@
+diff --git a/config/install/gin_login.settings.yml b/config/install/gin_login.settings.yml
+index 158d0b5..4aa78fa 100644
+--- a/config/install/gin_login.settings.yml
++++ b/config/install/gin_login.settings.yml
+@@ -2,3 +2,4 @@ logo:
+   use_default: true
+ brand_image:
+   use_default: true
++login_message: ''
+\ No newline at end of file
+diff --git a/config/schema/gin_login.schema.yml b/config/schema/gin_login.schema.yml
+index 64b53f7..d357ec8 100644
+--- a/config/schema/gin_login.schema.yml
++++ b/config/schema/gin_login.schema.yml
+@@ -22,3 +22,6 @@ gin_login.settings:
+         path:
+           type: string
+           label: 'Path to custom brand image'
++    login_message:
++      type: text
++      label: 'Message to display when in maintenance mode'
+diff --git a/gin_login.module b/gin_login.module
+index baa8d31..49cf141 100644
+--- a/gin_login.module
++++ b/gin_login.module
+@@ -196,6 +196,7 @@ function gin_login_preprocess_ginlogin(&$variables) {
+ 
+   $variables['brand_image'] = '//source.unsplash.com/collection/9407737';
+   $variables['brand_alt'] = 'Random image from unsplash';
++  $variables['login_message'] = $configData['login_path'];
+ 
+   if ($configData['brand_image']['use_default'] == "0") {
+     if (isset($configData['brand_image']['path']) && !empty($configData['brand_image']['path'])) {
+diff --git a/src/Form/GinLoginConfigurationForm.php b/src/Form/GinLoginConfigurationForm.php
+index 0fea61e..55ae557 100644
+--- a/src/Form/GinLoginConfigurationForm.php
++++ b/src/Form/GinLoginConfigurationForm.php
+@@ -105,6 +105,11 @@ class GinLoginConfigurationForm extends ConfigFormBase {
+         'file_validate_is_image' => [],
+       ],
+     ];
++    $form['login_message'] = [
++      '#type' => 'textfield',
++      '#title' => t('Custom login message'),
++      '#default_value' => $config->get('login_message'),
++    ];
+     return parent::buildForm($form, $form_state);
+   }
+ 
+@@ -220,6 +225,7 @@ class GinLoginConfigurationForm extends ConfigFormBase {
+         $config->set('brand_image.path', $value);
+       }
+     }
++    $config->set('login_message',$values['login_message']);
+ 
+     $config->save();
+     // Rebuild the router.
+diff --git a/templates/page--user--login.html.twig b/templates/page--user--login.html.twig
+index a81cf00..b1eed19 100644
+--- a/templates/page--user--login.html.twig
++++ b/templates/page--user--login.html.twig
+@@ -59,6 +59,9 @@
+       {{ page.pre_content|without('claro_primary_local_tasks', 'gin_primary_local_tasks') }}
+       <main class="page-content clearfix" role="main">
+         <div class="visually-hidden"><a id="main-content" tabindex="-1"></a></div>
++        {% if login_message %}
++          <div class="login-message">{{ login_message }}</div>
++        {% endif %}
+         {% block title %}
+           <h1 class="page-title user-form-page__page-title">{{ 'Log in'|t }}</h1>
+         {% endblock %}
