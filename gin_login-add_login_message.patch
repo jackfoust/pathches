@@ -27,7 +27,7 @@ index baa8d31..a4997a9 100644
  
    $variables['brand_image'] = '//source.unsplash.com/collection/9407737';
    $variables['brand_alt'] = 'Random image from unsplash';
-+  $variables['login_message'] = $configData['login_message'];
++  $variables['login_message'] = !empty($configData['login_message']) ? $configData['login_message'] : '';
  
    if ($configData['brand_image']['use_default'] == "0") {
      if (isset($configData['brand_image']['path']) && !empty($configData['brand_image']['path'])) {
