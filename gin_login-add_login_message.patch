@@ -9,7 +9,7 @@ index 158d0b5..4aa78fa 100644
 +login_message: ''
 \ No newline at end of file
 diff --git a/config/schema/gin_login.schema.yml b/config/schema/gin_login.schema.yml
-index 64b53f7..d357ec8 100644
+index 64b53f7..f2ad682 100644
 --- a/config/schema/gin_login.schema.yml
 +++ b/config/schema/gin_login.schema.yml
 @@ -22,3 +22,6 @@ gin_login.settings:
@@ -19,20 +19,21 @@ index 64b53f7..d357ec8 100644
 +    login_message:
 +      type: text
 +      label: 'Message to display when in maintenance mode'
+\ No newline at end of file
 diff --git a/gin_login.module b/gin_login.module
-index baa8d31..a4997a9 100644
+index 6b893c2..be0640e 100644
 --- a/gin_login.module
 +++ b/gin_login.module
-@@ -196,6 +196,7 @@ function gin_login_preprocess_ginlogin(&$variables) {
- 
-   $variables['brand_image'] = '//source.unsplash.com/collection/9407737';
-   $variables['brand_alt'] = 'Random image from unsplash';
+@@ -215,6 +215,7 @@ function gin_login_preprocess_ginlogin(&$variables) {
+   } else {
+     $variables['brand_image'] = '';
+   }
 +  $variables['login_message'] = !empty($configData['login_message']) ? $configData['login_message'] : '';
+ }
  
-   if ($configData['brand_image']['use_default'] == "0") {
-     if (isset($configData['brand_image']['path']) && !empty($configData['brand_image']['path'])) {
+ /**
 diff --git a/src/Form/GinLoginConfigurationForm.php b/src/Form/GinLoginConfigurationForm.php
-index 0fea61e..55ae557 100644
+index 21710a0..ffaa91c 100644
 --- a/src/Form/GinLoginConfigurationForm.php
 +++ b/src/Form/GinLoginConfigurationForm.php
 @@ -105,6 +105,11 @@ class GinLoginConfigurationForm extends ConfigFormBase {
@@ -56,7 +57,7 @@ index 0fea61e..55ae557 100644
      $config->save();
      // Rebuild the router.
 diff --git a/templates/page--user--login.html.twig b/templates/page--user--login.html.twig
-index a81cf00..b1eed19 100644
+index 76dc7dd..d91763a 100644
 --- a/templates/page--user--login.html.twig
 +++ b/templates/page--user--login.html.twig
 @@ -59,6 +59,9 @@
