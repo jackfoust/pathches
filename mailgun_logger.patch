@@ -1,0 +1,24 @@
+diff --git a/src/Plugin/Mail/MailgunMail.php b/src/Plugin/Mail/MailgunMail.php
+index 1620479..441d8a8 100644
+--- a/src/Plugin/Mail/MailgunMail.php
++++ b/src/Plugin/Mail/MailgunMail.php
+@@ -147,15 +147,15 @@ class MailgunMail implements MailInterface, ContainerFactoryPluginInterface {
+       // Debug mode: log all messages.
+       if ($this->mailgunConfig->get('debug_mode')) {
+         $this->logger->notice('Successfully queued message from %from to %to.', [
+-          '%from' => $message['from'],
+-          '%to' => $message['to'],
++          '%from' => print_r($message['from'],TRUE),
++          '%to' => print_r($message['to'],TRUE),
+         ]);
+       }
+     }
+     else {
+       $this->logger->error('Unable to queue message from %from to %to.', [
+-        '%from' => $message['from'],
+-        '%to' => $message['to'],
++        '%from' => print_r($message['from'],TRUE),
++        '%to' => print_r($message['to'],TRUE),
+       ]);
+     }
+ 
