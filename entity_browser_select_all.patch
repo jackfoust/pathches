@@ -9,9 +9,9 @@ index 2ad64d84da92df8e27fe9c0ad0d693321045d197..023772f239ad94c5b3d53c3ebf9a78db
 +  Drupal.behaviors.EntityBrowserSelectAll = {
 +    attach: function (context, settings) {
 +      if ($('.views-field-entity-browser-select.select-all').length) {
-+        $('.views-field-entity-browser-select.select-all').html('<input type="checkbox" class="form-checkbox check-all-eb">');
++        $('.views-field-entity-browser-select.select-all').html('<input type="checkbox" class="form-checkbox form-boolean form-boolean--type-checkbox check-all-eb">');
 +      } else {
-+        $(".views-field-entity-browser-select").closest('table').before( "<input type='checkbox' class='form-checkbox check-all-eb'> " + Drupal.t("Select All") );
++        $(".views-field-entity-browser-select").closest('table').before( "<input type='checkbox' class='form-checkbox form-boolean form-boolean--type-checkbox check-all-eb'> " + Drupal.t("Select All") );
 +      }
 +      $('.check-all-eb').click(function () {
 +        let checked = this.checked;
