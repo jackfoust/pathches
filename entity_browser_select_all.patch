@@ -1,0 +1,23 @@
+diff --git a/js/entity_browser.view.js b/js/entity_browser.view.js
+index 2ad64d84da92df8e27fe9c0ad0d693321045d197..023772f239ad94c5b3d53c3ebf9a78dbf068af18 100644
+--- a/js/entity_browser.view.js
++++ b/js/entity_browser.view.js
+@@ -79,4 +79,18 @@
+     }
+   };
+ 
++  Drupal.behaviors.EntityBrowserSelectAll = {
++    attach: function (context, settings) {
++      if ($('.views-field-entity-browser-select.select-all').length) {
++        $('.views-field-entity-browser-select.select-all').html('<input type="form-checkbox" class="check-all-eb">');
++      } else {
++        $(".views-field-entity-browser-select").closest('table').before( "<input type='form-checkbox' class='check-all-eb'> " + Drupal.t("Select All") );
++      }
++      $('.check-all-eb').click(function () {
++        let checked = this.checked;
++        $('tbody .views-field-entity-browser-select input.form-checkbox').prop('checked', checked);
++      });
++    },
++  };
++
+ }(jQuery, Drupal, drupalSettings, once));
