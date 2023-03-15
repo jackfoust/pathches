@@ -1,24 +1,54 @@
-diff --git a/src/Plugin/Mail/MailgunMail.php b/src/Plugin/Mail/MailgunMail.php
-index 1620479..441d8a8 100644
---- a/src/Plugin/Mail/MailgunMail.php
-+++ b/src/Plugin/Mail/MailgunMail.php
-@@ -147,15 +147,15 @@ class MailgunMail implements MailInterface, ContainerFactoryPluginInterface {
+diff --git a/src/MailgunHandler.php b/src/MailgunHandler.php
+index 54d6fbf..8fe9784 100644
+--- a/src/MailgunHandler.php
++++ b/src/MailgunHandler.php
+@@ -104,14 +104,7 @@ class MailgunHandler implements MailgunHandlerInterface {
+ 
        // Debug mode: log all messages.
        if ($this->mailgunConfig->get('debug_mode')) {
-         $this->logger->notice('Successfully queued message from %from to %to.', [
+-        $this->logger->notice('Successfully sent message from %from to %to. %id %message.',
+-          [
+-            '%from' => $mailgunMessage['from'],
+-            '%to' => $this->getRecipients($mailgunMessage),
+-            '%id' => $response->getId(),
+-            '%message' => $response->getMessage(),
+-          ]
+-        );
++        \Drupal::logger('wp_ccc_payload_queue_worker')->notice('<pre><code>' . print_r($mailgunMessage, TRUE) . '</code></pre>');
+       }
+       return $response;
+     }
+diff --git a/src/Plugin/Mail/MailgunMail.php b/src/Plugin/Mail/MailgunMail.php
+index 1620479..bf458bd 100644
+--- a/src/Plugin/Mail/MailgunMail.php
++++ b/src/Plugin/Mail/MailgunMail.php
+@@ -146,10 +146,7 @@ class MailgunMail implements MailInterface, ContainerFactoryPluginInterface {
+     if ($result !== FALSE) {
+       // Debug mode: log all messages.
+       if ($this->mailgunConfig->get('debug_mode')) {
+-        $this->logger->notice('Successfully queued message from %from to %to.', [
 -          '%from' => $message['from'],
 -          '%to' => $message['to'],
-+          '%from' => print_r($message['from'],TRUE),
-+          '%to' => print_r($message['to'],TRUE),
-         ]);
+-        ]);
++        \Drupal::logger('wp_ccc_payload_queue_worker')->notice('<pre><code>' . print_r($message, TRUE) . '</code></pre>');
        }
      }
      else {
-       $this->logger->error('Unable to queue message from %from to %to.', [
--        '%from' => $message['from'],
--        '%to' => $message['to'],
-+        '%from' => print_r($message['from'],TRUE),
-+        '%to' => print_r($message['to'],TRUE),
-       ]);
+diff --git a/src/Plugin/QueueWorker/SendMailBase.php b/src/Plugin/QueueWorker/SendMailBase.php
+index daca7ad..787c75b 100644
+--- a/src/Plugin/QueueWorker/SendMailBase.php
++++ b/src/Plugin/QueueWorker/SendMailBase.php
+@@ -66,12 +66,7 @@ class SendMailBase extends QueueWorkerBase implements ContainerFactoryPluginInte
+     $result = $this->mailgunHandler->sendMail($data->message);
+ 
+     if ($this->mailgunConfig->get('debug_mode')) {
+-      $this->logger->notice('Successfully sent message on CRON from %from to %to.',
+-        [
+-          '%from' => $data->message['from'],
+-          '%to' => $data->message['to'],
+-        ]
+-      );
++      \Drupal::logger('wp_ccc_payload_queue_worker')->notice('<pre><code>' . print_r($data, TRUE) . '</code></pre>');
      }
  
+     if (!$result) {
