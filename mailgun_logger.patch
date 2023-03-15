@@ -14,7 +14,7 @@ index 54d6fbf..8fe9784 100644
 -            '%message' => $response->getMessage(),
 -          ]
 -        );
-+        \Drupal::logger('wp_ccc_payload_queue_worker')->notice('<pre><code>' . print_r($mailgunMessage, TRUE) . '</code></pre>');
++        $this->logger->notice('<pre><code>' . print_r($mailgunMessage, TRUE) . '</code></pre>');
        }
        return $response;
      }
@@ -30,7 +30,7 @@ index 1620479..bf458bd 100644
 -          '%from' => $message['from'],
 -          '%to' => $message['to'],
 -        ]);
-+        \Drupal::logger('wp_ccc_payload_queue_worker')->notice('<pre><code>' . print_r($message, TRUE) . '</code></pre>');
++        $this->logger->notice('<pre><code>' . print_r($message, TRUE) . '</code></pre>');
        }
      }
      else {
