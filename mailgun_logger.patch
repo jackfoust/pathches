@@ -48,7 +48,7 @@ index daca7ad..787c75b 100644
 -          '%to' => $data->message['to'],
 -        ]
 -      );
-+      \Drupal::logger('wp_ccc_payload_queue_worker')->notice('<pre><code>' . print_r($data, TRUE) . '</code></pre>');
++      $this->logger->notice('<pre><code>' . print_r($data, TRUE) . '</code></pre>');
      }
  
      if (!$result) {
