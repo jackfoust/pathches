@@ -1,0 +1,29 @@
+diff --git a/src/Plugin/views/style/CalendarViewBase.php b/src/Plugin/views/style/CalendarViewBase.php
+index eb975c5..14f4746 100644
+--- a/src/Plugin/views/style/CalendarViewBase.php
++++ b/src/Plugin/views/style/CalendarViewBase.php
+@@ -11,6 +11,7 @@ use Drupal\views\Plugin\views\field\EntityField;
+ use Drupal\views\Plugin\views\style\DefaultStyle;
+ use Drupal\views\ResultRow;
+ use Symfony\Component\DependencyInjection\ContainerInterface;
++use Drupal\field\Entity\FieldStorageConfig;
+ 
+ /**
+  * Defines a base class for Calendar View style plugin.
+@@ -631,8 +632,15 @@ abstract class CalendarViewBase extends DefaultStyle implements CalendarViewInte
+ 
+       // Add an OR condition for the field.
+       $and = $this->view->query->getConnection()->condition('AND');
+-      $and->condition($alias, $start->getTimestamp(), '>');
+-      $and->condition($alias, $end->getTimestamp(), '<');
++      $field_storage_config = \Drupal\field\Entity\FieldStorageConfig::loadByName('node', $field->field);
++      if (!empty($field_storage_config) && $field_storage_config->getType() == 'datetime') {
++        $and->condition($alias, $start->format("Y-m-d\TH:i:s"), '>');
++        $and->condition($alias, $end->format("Y-m-d\TH:i:s"), '<');
++      }
++      else {
++        $and->condition($alias, $start->getTimestamp(), '>');
++        $and->condition($alias, $end->getTimestamp(), '<');
++      }
+       $conditions->condition($and);
+     }
