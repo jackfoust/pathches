@@ -16,7 +16,7 @@ index eb975c5..14f4746 100644
        $and = $this->view->query->getConnection()->condition('AND');
 -      $and->condition($alias, $start->getTimestamp(), '>');
 -      $and->condition($alias, $end->getTimestamp(), '<');
-+      $field_storage_config = \Drupal\field\Entity\FieldStorageConfig::loadByName('node', $field->field);
++      $field_storage_config = FieldStorageConfig::loadByName('node', $field->field);
 +      if (!empty($field_storage_config) && $field_storage_config->getType() == 'datetime') {
 +        $and->condition($alias, $start->format("Y-m-d\TH:i:s"), '>');
 +        $and->condition($alias, $end->format("Y-m-d\TH:i:s"), '<');
