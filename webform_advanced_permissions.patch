@@ -1,5 +1,5 @@
 diff --git a/webform.routing.yml b/webform.routing.yml
-index 103fc1bd5..fc109fc12 100644
+index 103fc1bd5..7a7611b9e 100644
 --- a/webform.routing.yml
 +++ b/webform.routing.yml
 @@ -30,7 +30,7 @@ webform.config.handlers:
@@ -11,3 +11,12 @@ index 103fc1bd5..fc109fc12 100644
  
  webform.config.variants:
    path: '/admin/structure/webform/config/variants'
+@@ -642,7 +642,7 @@ entity.webform.handlers:
+     _entity_form: 'webform.handlers'
+     _title_callback: '\Drupal\webform\Controller\WebformEntityController::title'
+   requirements:
+-    _entity_access: 'webform.update'
++    _permission: 'administer webform advanced'
+ 
+ entity.webform.handler:
+   path: '/admin/structure/webform/manage/{webform}/handlers/add'
