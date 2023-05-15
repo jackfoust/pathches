@@ -1,0 +1,13 @@
+diff --git a/templates/toolbar.html.twig b/templates/toolbar.html.twig
+index 53e9496..ca7863f 100644
+--- a/templates/toolbar.html.twig
++++ b/templates/toolbar.html.twig
+@@ -16,8 +16,6 @@
+             <li class="gin-breadcrumb__item">
+               {% if entity_edit_url and entity_title %}
+                 <a class="gin-breadcrumb__link gin-back-to-admin" href="{{ entity_edit_url }}">{{ 'Edit %title'|t({ '%title': entity_title }) }}</a>
+-              {% else %}
+-                <a class="gin-breadcrumb__link gin-back-to-admin" href="{{ path('system.admin_content') }}">{{ 'Back to Administration'|t }}</a>
+               {% endif %}
+             </li>
+           </ol>
