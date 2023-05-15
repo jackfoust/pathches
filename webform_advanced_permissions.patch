@@ -1,0 +1,13 @@
+diff --git a/webform.routing.yml b/webform.routing.yml
+index 103fc1bd5..fc109fc12 100644
+--- a/webform.routing.yml
++++ b/webform.routing.yml
+@@ -30,7 +30,7 @@ webform.config.handlers:
+     _form: '\Drupal\webform\Form\AdminConfig\WebformAdminConfigHandlersForm'
+     _title: 'Webforms: Handlers configuration'
+   requirements:
+-    _permission: 'administer webform'
++    _permission: 'administer webform advanced'
+ 
+ webform.config.variants:
+   path: '/admin/structure/webform/config/variants'
