@@ -1,0 +1,13 @@
+diff --git a/src/Plugin/WebformElementBase.php b/src/Plugin/WebformElementBase.php
+index 71ed0b689..f24a7d333 100644
+--- a/src/Plugin/WebformElementBase.php
++++ b/src/Plugin/WebformElementBase.php
+@@ -2296,7 +2296,7 @@ class WebformElementBase extends PluginBase implements WebformElementInterface,
+    * {@inheritdoc}
+    */
+   public function getOffCanvasWidth() {
+-    return WebformDialogHelper::DIALOG_NARROW;
++    return WebformDialogHelper::DIALOG_WIDE;
+   }
+ 
+   /**
