@@ -7,7 +7,7 @@ index f703160b4..a653f28aa 100644
        }
        // Check for custom MIME headers or custom JSON data.
 -      if (substr($key, 0, 2) == 'h:' || substr($key, 0, 2) == 'v:') {
-+      if (substr($key, 0, 2) == 'h:' || substr($key, 0, 2) == 'v:' || $key == 'recipient-variables' || $key == 'template') {
++      if (substr($key, 0, 2) == 't:' || substr($key, 0, 2) == 'h:' || substr($key, 0, 2) == 'v:' || $key == 'recipient-variables' || $key == 'template') {
          $mailgun_message[$key] = $value;
        }
 +      if($key == 'template') {
