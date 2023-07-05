@@ -1,8 +1,8 @@
 diff --git a/src/Plugin/EntityPrint/PrintEngine/DomPdf.php b/src/Plugin/EntityPrint/PrintEngine/DomPdf.php
-index 6ee4863..a045d7d 100644
+index a6d6db8..6b71ffe 100644
 --- a/src/Plugin/EntityPrint/PrintEngine/DomPdf.php
 +++ b/src/Plugin/EntityPrint/PrintEngine/DomPdf.php
-@@ -239,10 +239,16 @@ class DomPdf extends PdfEngineBase implements ContainerFactoryPluginInterface {
+@@ -236,11 +236,17 @@ class DomPdf extends PdfEngineBase implements ContainerFactoryPluginInterface {
     */
    protected function doRender() {
      $this->setupHttpContext();
@@ -10,12 +10,13 @@ index 6ee4863..a045d7d 100644
 +    $str = $this->dompdf->getDom()->C14N();
  
      if (!$this->hasRendered) {
-       $this->dompdf->render();
-       $this->hasRendered = TRUE;
-+      if(!empty($str) && str_contains($str,'webform-element')) {
-+        $font = $this->dompdf->getFontMetrics()->get_font("helvetica", "regular");
-+        $this->dompdf->getCanvas()->page_text(6, 6, "DOCUMENT ID: $timestamp - Page {PAGE_NUM} of {PAGE_COUNT}", $font, 10, array(0,0,0));
-+      }
-     }
-   }
- 
+       try {
+         $this->dompdf->render();
+         $this->hasRendered = TRUE;
++        if(!empty($str) && str_contains($str,'webform-element')) {
++          $font = $this->dompdf->getFontMetrics()->get_font("helvetica", "regular");
++          $this->dompdf->getCanvas()->page_text(6, 6, "DOCUMENT ID: $timestamp - Page {PAGE_NUM} of {PAGE_COUNT}", $font, 10, array(0,0,0));
++        }
+       }
+       catch (DompdfLibException $e) {
+         throw new PrintEngineException(sprintf('Failed to generate PDF: %s', $e));
