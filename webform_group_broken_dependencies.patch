@@ -1,12 +1,20 @@
 diff --git a/modules/webform_group/webform_group.info.yml b/modules/webform_group/webform_group.info.yml
-index 07a58ae76..a366f8ea1 100644
+index 07a58ae76..b5698e56f 100644
 --- a/modules/webform_group/webform_group.info.yml
 +++ b/modules/webform_group/webform_group.info.yml
-@@ -6,5 +6,5 @@ core_version_requirement: ^9.3
+@@ -1,10 +1,12 @@
+ name: 'Webform Group'
+ type: module
+-description: 'Provides Webform and Group integration.'
+ package: 'Webform'
+ core_version_requirement: ^9.3
  dependencies:
    - 'webform:webform'
    - 'webform:webform_node'
 -  - 'group:group (>=1.5.0)'
 -  - 'group:gnode (>=1.5.0)'
 +  - 'group:group'
-+  - 'group:gnode
++  - 'group:gnode'
++
++
++description: 'Provides Webform and Group integration.'
