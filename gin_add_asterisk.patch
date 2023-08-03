@@ -1,0 +1,16 @@
+diff --git a/dist/css/components/toolbar.css b/dist/css/components/toolbar.css
+index d18f1bc..1e2560b 100644
+--- a/dist/css/components/toolbar.css
++++ b/dist/css/components/toolbar.css
+@@ -310,6 +310,11 @@ body.gin--classic-toolbar {
+           mask-image: url("../../media/sprite.svg#shortcut-view");
+ }
+ 
++.toolbar .toolbar-bar .toolbar-icon-asterisk:before {
++  -webkit-mask-image: url("../../media/sprite.svg#asterisk-view");
++          mask-image: url("../../media/sprite.svg#asterisk-view");
++}
++
+ .toolbar .toolbar-bar .toolbar-icon-coffee:before,
+ .toolbar .toolbar-bar #toolbar-item-administration-search:before {
+   -webkit-mask-image: url("../../media/sprite.svg#search-view");
