@@ -1,0 +1,27 @@
+diff --git a/editoria11y.install b/editoria11y.install
+index 5d065f1..07a288b 100644
+--- a/editoria11y.install
++++ b/editoria11y.install
+@@ -8,22 +8,6 @@
+ use Drupal\Core\Entity\EntityTypeInterface;
+ use Drupal\user\Entity\Role;
+ 
+-/**
+- * Implements hook_install().
+- */
+-function editoria11y_install() {
+-  // Assign default access to roles likely to have content editing access.
+-  /** @var \Drupal\user\RoleInterface $role */
+-  foreach (Role::loadMultiple() as $role) {
+-    if ($role->hasPermission('view own unpublished content') ||
+-      $role->hasPermission('access content overview') || $role->hasPermission('access in place editing')) {
+-      $role->grantPermission('view editoria11y checker');
+-      $role->grantPermission('mark as hidden in editoria11y');
+-      $role->save();
+-    }
+-  }
+-}
+-
+ /**
+  * Results table definition.
+  */
