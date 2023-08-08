@@ -1,0 +1,17 @@
+diff --git a/editoria11y.module b/editoria11y.module
+index f4d75b1..156ff44 100644
+--- a/editoria11y.module
++++ b/editoria11y.module
+@@ -25,6 +25,12 @@ function editoria11y_page_attachments(array &$attachments) {
+   $attachments['#cache']['contexts'][] = 'route';
+   $route_match = \Drupal::routeMatch();
+   $route_name = $route_match->getRouteName();
++
++  // Ignore Dashboards
++  if($route_name == 'entity.dashboard.canonical') {
++    return;
++  }
++
+   if (\Drupal::service('router.admin_context')->isAdminRoute()) {
+     if (substr($route_name, 0, 12) == 'editoria11y.') {
+       $apiUrl = Url::fromRoute('editoria11y.api_report')->toString();
