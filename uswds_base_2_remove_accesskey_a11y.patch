@@ -1,0 +1,20 @@
+diff --git a/templates/block/block--system-branding-block.html.twig b/templates/block/block--system-branding-block.html.twig
+index 440dfa7..a33fb02 100644
+--- a/templates/block/block--system-branding-block.html.twig
++++ b/templates/block/block--system-branding-block.html.twig
+@@ -18,13 +18,13 @@
+ 
+   <em class="usa-logo__text">
+   {% if site_logo %}
+-    <a class="logo-img" href="{{ path('<front>') }}" accesskey="1" title="{{ 'Home'|t }}" aria-label="Home">
++    <a class="logo-img" href="{{ path('<front>') }}" title="{{ 'Home'|t }}" aria-label="Home">
+       <img src="{{ site_logo }}" alt="{{ 'Home'|t }}" />
+     </a>
+   {% endif %}
+ 
+   {% if site_name %}
+-      <a href="{{ path('<front>') }}" accesskey="2" title="{{ 'Home'|t }}" aria-label="Home">
++      <a href="{{ path('<front>') }}" title="{{ 'Home'|t }}" aria-label="Home">
+         {{ site_name }}
+       </a>
+   {% endif %}
