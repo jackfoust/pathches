@@ -1,0 +1,29 @@
+diff --git a/src/Controller/WkhtmltopdfController.php b/src/Controller/WkhtmltopdfController.php
+index c541ea1..8e58291 100644
+--- a/src/Controller/WkhtmltopdfController.php
++++ b/src/Controller/WkhtmltopdfController.php
+@@ -85,7 +85,7 @@ class WkhtmltopdfController extends ControllerBase {
+       return new RedirectResponse($url);
+     }
+ 
+-    $url_redirect = file_create_url($file_path);
++    $url_redirect = \Drupal::service('file_url_generator')->generateAbsoluteString($file_path);
+     return new RedirectResponse($url_redirect);
+   }
+ 
+diff --git a/wkhtmltopdf.info.yml b/wkhtmltopdf.info.yml
+index d19f79e..4723541 100644
+--- a/wkhtmltopdf.info.yml
++++ b/wkhtmltopdf.info.yml
+@@ -1,5 +1,4 @@
+ name: Wkhtmltopdf Module
+ description: Wkhtmltopdf Module
+-core: 8.x
++
+ type: module
+-core_version_requirement: ^8 || ^9
+\ No newline at end of file
++
++core_version_requirement: ^9.3 || ^10
++
+\ No newline at end of file
