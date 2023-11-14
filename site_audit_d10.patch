@@ -6,7 +6,7 @@ index 4ff425e..8b581ee 100644
      // Sorting my entities.
      $entity_query = \Drupal::entityQuery('site_audit_report')
        ->sort('created' , 'DESC');
-+    $entity_query->access(TRUE);
++    $entity_query->accessCheck(TRUE);
  
      // Make the table sortable.
      $header = $this->buildHeader();
