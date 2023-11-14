@@ -1,0 +1,12 @@
+diff --git a/site_audit_report_entity/src/SiteAuditReportListBuilder.php b/site_audit_report_entity/src/SiteAuditReportListBuilder.php
+index 4ff425e..8b581ee 100644
+--- a/site_audit_report_entity/src/SiteAuditReportListBuilder.php
++++ b/site_audit_report_entity/src/SiteAuditReportListBuilder.php
+@@ -50,6 +50,7 @@ class SiteAuditReportListBuilder extends EntityListBuilder {
+     // Sorting my entities.
+     $entity_query = \Drupal::entityQuery('site_audit_report')
+       ->sort('created' , 'DESC');
++    $entity_query->access(TRUE);
+ 
+     // Make the table sortable.
+     $header = $this->buildHeader();
