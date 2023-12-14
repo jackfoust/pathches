@@ -1,0 +1,13 @@
+diff --git a/src/Plugin/Block/LBKBaseComponent.php b/src/Plugin/Block/LBKBaseComponent.php
+index e52fe63..8f91c47 100644
+--- a/src/Plugin/Block/LBKBaseComponent.php
++++ b/src/Plugin/Block/LBKBaseComponent.php
+@@ -129,7 +129,7 @@ abstract class LBKBaseComponent extends BlockBase
+   protected function baseConfigurationDefaults() {
+     return [
+       'id' => $this->getPluginId(),
+-      'provider' => $this->pluginDefinition['provider'],
++      'provider' => $this->pluginDefinition['provider'] ?? '',
+       'title' => '',
+       'display_title' => TRUE,
+       'classes' => '',
