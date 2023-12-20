@@ -1,18 +1,19 @@
 diff -ur webform_encrypt/src/Element/WebformElementEncrypt.php webform_encrypt/src/Element/WebformElementEncrypt.php
---- webform_encrypt/src/Element/WebformElementEncrypt.php	2023-12-20 10:26:33.112100738 -0500
-+++ webform_encrypt/src/Element/WebformElementEncrypt.php	2023-12-20 10:27:20.864589903 -0500
-@@ -56,13 +56,11 @@
+--- webform_encrypt/src/Element/WebformElementEncrypt.php	2023-12-20 10:27:20.864589903 -0500
++++ webform_encrypt/src/Element/WebformElementEncrypt.php	2023-12-20 10:43:49.252343163 -0500
+@@ -55,12 +55,13 @@
+         ]),
          '#default_value' => isset($config[$element_name]['encrypt']) ? $config[$element_name]['encrypt'] : FALSE,
        ];
- 
+-
 +      $webform_config = \Drupal::config('wp_webform.settings');
 +      $default_encrypt_profile = $webform_config->get('wp_webform_default_encryption_profile') ?: NULL;
        $element['element_encrypt']['encrypt_profile'] = [
          '#type' => 'select',
          '#title' => t('Select Encryption Profile'),
          '#options' => $encryption_options,
-+        '#default_value' => isset($config[$element_name]['encrypt_profile']) ? $config[$element_name]['encrypt_profile'] : $default_encrypt_profile,
 -        '#default_value' => isset($config[$element_name]['encrypt_profile']) ? $config[$element_name]['encrypt_profile'] : NULL,
++        '#default_value' => isset($config[$element_name]['encrypt_profile']) ? $config[$element_name]['encrypt_profile'] : $default_encrypt_profile,
          '#states' => [
            'visible' => [
              [':input[name="encrypt"]' => ['checked' => TRUE]],
