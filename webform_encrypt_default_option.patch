@@ -1,4 +1,4 @@
-diff -ur src/Element/WebformElementEncrypt.php src/Element/WebformElementEncrypt.php
+diff -ur webform_encrypt/src/Element/WebformElementEncrypt.php webform_encrypt/src/Element/WebformElementEncrypt.php
 --- webform_encrypt/src/Element/WebformElementEncrypt.php	2023-12-20 10:26:33.112100738 -0500
 +++ webform_encrypt/src/Element/WebformElementEncrypt.php	2023-12-20 10:27:20.864589903 -0500
 @@ -56,13 +56,11 @@
