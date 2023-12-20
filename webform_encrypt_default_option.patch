@@ -9,7 +9,6 @@ index 412cc00..a7a8a93 100644
 +      // Determines if it is a new element to be added to the Webform.
 +      $is_new_element = is_null($form_state->getFormObject()->getKey());
 +
-+      $default_encryption_enabled = $is_new_element ? (bool) webform_encrypt_get_third_party_setting('default_encryption_enabled', $webform) : FALSE;
        $element['element_encrypt']['encrypt'] = [
          '#type' => 'checkbox',
          '#title' => t("Encrypt this field's value"),
@@ -17,8 +16,7 @@ index 412cc00..a7a8a93 100644
            ':link' => Url::fromRoute('entity.encryption_profile.collection')
              ->toString(),
          ]),
--        '#default_value' => isset($config[$element_name]['encrypt']) ? $config[$element_name]['encrypt'] : FALSE,
-+        '#default_value' => isset($config[$element_name]['encrypt']) ? $config[$element_name]['encrypt'] : $default_encryption_enabled,
+        '#default_value' => isset($config[$element_name]['encrypt']) ? $config[$element_name]['encrypt'] : FALSE,
        ];
  
 +      $default_encrypt_profile = $is_new_element ? webform_encrypt_get_third_party_setting('default_encrypt_profile', $webform) : NULL;
