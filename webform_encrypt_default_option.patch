@@ -1,31 +1,18 @@
-diff --git a/src/Element/WebformElementEncrypt.php b/src/Element/WebformElementEncrypt.php
-index 412cc00..a7a8a93 100644
---- a/src/Element/WebformElementEncrypt.php
-+++ b/src/Element/WebformElementEncrypt.php
-@@ -46,6 +46,10 @@ class WebformElementEncrypt extends FormElement {
-       ->getEncryptionProfileNamesAsOptions();
- 
-     if (count($encryption_options) > 0) {
-+      // Determines if it is a new element to be added to the Webform.
-+      $is_new_element = is_null($form_state->getFormObject()->getKey());
-+
-       $element['element_encrypt']['encrypt'] = [
-         '#type' => 'checkbox',
-         '#title' => t("Encrypt this field's value"),
-@@ -53,14 +57,15 @@ class WebformElementEncrypt extends FormElement {
-           ':link' => Url::fromRoute('entity.encryption_profile.collection')
-             ->toString(),
-         ]),
-        '#default_value' => isset($config[$element_name]['encrypt']) ? $config[$element_name]['encrypt'] : FALSE,
+diff -ur src/Element/WebformElementEncrypt.php src/Element/WebformElementEncrypt.php
+--- webform_encrypt/src/Element/WebformElementEncrypt.php	2023-12-20 10:26:33.112100738 -0500
++++ webform_encrypt/src/Element/WebformElementEncrypt.php	2023-12-20 10:27:20.864589903 -0500
+@@ -56,13 +56,11 @@
+         '#default_value' => isset($config[$element_name]['encrypt']) ? $config[$element_name]['encrypt'] : FALSE,
        ];
  
-+      $default_encrypt_profile = $is_new_element ? webform_encrypt_get_third_party_setting('default_encrypt_profile', $webform) : NULL;
+-      $webform_config = \Drupal::config('wp_webform.settings');
+-      $default_encrypt_profile = $webform_config->get('wp_webform_default_encryption_profile') ?: NULL;
        $element['element_encrypt']['encrypt_profile'] = [
          '#type' => 'select',
          '#title' => t('Select Encryption Profile'),
          '#options' => $encryption_options,
--        '#default_value' => isset($config[$element_name]['encrypt_profile']) ? $config[$element_name]['encrypt_profile'] : NULL,
-+        '#default_value' => isset($config[$element_name]['encrypt_profile']) ? $config[$element_name]['encrypt_profile'] : $default_encrypt_profile,
+-        '#default_value' => isset($config[$element_name]['encrypt_profile']) ? $config[$element_name]['encrypt_profile'] : $default_encrypt_profile,
++        '#default_value' => isset($config[$element_name]['encrypt_profile']) ? $config[$element_name]['encrypt_profile'] : NULL,
          '#states' => [
            'visible' => [
              [':input[name="encrypt"]' => ['checked' => TRUE]],
