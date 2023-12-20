@@ -5,14 +5,14 @@ diff -ur webform_encrypt/src/Element/WebformElementEncrypt.php webform_encrypt/s
          '#default_value' => isset($config[$element_name]['encrypt']) ? $config[$element_name]['encrypt'] : FALSE,
        ];
  
--      $webform_config = \Drupal::config('wp_webform.settings');
--      $default_encrypt_profile = $webform_config->get('wp_webform_default_encryption_profile') ?: NULL;
++      $webform_config = \Drupal::config('wp_webform.settings');
++      $default_encrypt_profile = $webform_config->get('wp_webform_default_encryption_profile') ?: NULL;
        $element['element_encrypt']['encrypt_profile'] = [
          '#type' => 'select',
          '#title' => t('Select Encryption Profile'),
          '#options' => $encryption_options,
--        '#default_value' => isset($config[$element_name]['encrypt_profile']) ? $config[$element_name]['encrypt_profile'] : $default_encrypt_profile,
-+        '#default_value' => isset($config[$element_name]['encrypt_profile']) ? $config[$element_name]['encrypt_profile'] : NULL,
++        '#default_value' => isset($config[$element_name]['encrypt_profile']) ? $config[$element_name]['encrypt_profile'] : $default_encrypt_profile,
+-        '#default_value' => isset($config[$element_name]['encrypt_profile']) ? $config[$element_name]['encrypt_profile'] : NULL,
          '#states' => [
            'visible' => [
              [':input[name="encrypt"]' => ['checked' => TRUE]],
