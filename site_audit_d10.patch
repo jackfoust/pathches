@@ -1,5 +1,5 @@
 diff --git a/site_audit_report_entity/src/SiteAuditReportListBuilder.php b/site_audit_report_entity/src/SiteAuditReportListBuilder.php
-index 4ff425e..8b581ee 100644
+index 4ff425e..ec7bb43 100644
 --- a/site_audit_report_entity/src/SiteAuditReportListBuilder.php
 +++ b/site_audit_report_entity/src/SiteAuditReportListBuilder.php
 @@ -50,6 +50,7 @@ class SiteAuditReportListBuilder extends EntityListBuilder {
@@ -10,3 +10,21 @@ index 4ff425e..8b581ee 100644
  
      // Make the table sortable.
      $header = $this->buildHeader();
+diff --git a/site_audit_send/src/RestClient.php b/site_audit_send/src/RestClient.php
+index 158d9fd..46f4b73 100644
+--- a/site_audit_send/src/RestClient.php
++++ b/site_audit_send/src/RestClient.php
+@@ -19,6 +19,13 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
+  */
+ class RestClient {
+ 
++  /**
++   * The config factory.
++   *
++   * @var \Drupal\Core\Config\ConfigFactoryInterface
++   */
++  protected $configFactory;
++
+   /**
+    * Constructs a \Drupal\system\ConfigFormBase object.
+    *
