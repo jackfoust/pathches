@@ -1,0 +1,15 @@
+diff --git a/modules/eb_widget/js/dropzonejs_eb_widget.common.js b/modules/eb_widget/js/dropzonejs_eb_widget.common.js
+index c1cfdae..b47dc64 100644
+--- a/modules/eb_widget/js/dropzonejs_eb_widget.common.js
++++ b/modules/eb_widget/js/dropzonejs_eb_widget.common.js
+@@ -18,6 +18,10 @@
+             var $submit = $form.find('.is-entity-browser-submit');
+             $submit.prop('disabled', true);
+ 
++            $($submit, context).click(function () {
++              $submit.prop('value', 'Processing....');
++            });
++
+             item.instance.on('queuecomplete', function () {
+               if (item.instance.getRejectedFiles().length === 0) {
+                 $submit.prop('disabled', false);
