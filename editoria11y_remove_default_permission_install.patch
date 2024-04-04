@@ -5,11 +5,9 @@ index 5b7381e..046f3c6 100644
 @@ -9,20 +9,9 @@
  use Drupal\user\Entity\Role;
  
- /**
+- /**
 - * Implements hook_install().
-+ * aa
-+ *
-  */
+-  */
 -function editoria11y_install() {
 -  // Assign default access to roles likely to have content editing access.
 -  /** @var \Drupal\user\RoleInterface $role */
