@@ -1,14 +1,15 @@
 diff --git a/editoria11y.install b/editoria11y.install
-index 5b7381e..8066956 100644
+index 5b7381e..046f3c6 100644
 --- a/editoria11y.install
 +++ b/editoria11y.install
-@@ -8,22 +8,6 @@
- use Drupal\Core\Entity\EntityTypeInterface;
+@@ -9,20 +9,9 @@
  use Drupal\user\Entity\Role;
  
--/**
+ /**
 - * Implements hook_install().
-- */
++ * aa
++ *
+  */
 -function editoria11y_install() {
 -  // Assign default access to roles likely to have content editing access.
 -  /** @var \Drupal\user\RoleInterface $role */
@@ -21,7 +22,6 @@ index 5b7381e..8066956 100644
 -    }
 -  }
 -}
--
+ 
  /**
   * Results table definition.
-  */
