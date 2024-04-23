@@ -1,0 +1,515 @@
+diff --git a/js/fullcalendar_view.js b/js/fullcalendar_view.js
+index e975fb4d848c62d69eaa51968f165b43a6c1808b..611327d48d90555e724e0a910f48f8c6cebc12fe 100644
+--- a/js/fullcalendar_view.js
++++ b/js/fullcalendar_view.js
+@@ -3,7 +3,7 @@
+  * Fullcalendar View plugin JavaScript file.
+  */
+ 
+-(function($, Drupal) {
++(function($, Drupal, once) {
+   var initialLocaleCode = 'en';
+   // Dialog index.
+   var dialogIndex = 0;
+@@ -16,6 +16,8 @@
+    * Event render handler
+    */
+   function eventRender (info) {
++    let viewIndex = parseInt(this.el.getAttribute("calendar-view-index"));
++    let viewSettings = drupalSettings.fullCalendarView[viewIndex];
+     // Event title html markup.
+     let eventTitleEle = info.el.getElementsByClassName('fc-title');
+     if(eventTitleEle.length > 0) {
+@@ -31,6 +33,23 @@
+         eventListTitleEle[0].innerHTML = info.event.title;
+       }
+     }
++    // Modal popup
++    if (viewSettings.dialogModal) {
++      if ($(info.el).is('a')) {
++        $(info.el).addClass('use-ajax');
++        $(info.el).attr('data-dialog-type', 'modal');
++        $(info.el).attr('data-dialog-options', viewSettings.dialog_modal_options);
++        $(info.el).attr('href', $(info.el).attr('href').replaceAll('&amp;', '&'));
++      }
++      else {
++        $(info.el).find('a').each(function(){
++          $(this).attr('data-dialog-type', 'modal');
++          $(this).attr('data-dialog-options', viewSettings.dialog_modal_options);
++          $(this).addClass('use-ajax');
++          $(this).attr('href', $(this).attr('href').replaceAll('&amp;', '&'));
++        });
++      }
++    }
+   }
+   /**
+    * Event resize handler
+@@ -151,6 +170,11 @@
+     }
+     // Open a new window to show the details of the event.
+     if (thisEvent.url) {
++      let eventURL = new URL(thisEvent.url, location.origin);
++      if (eventURL.origin === "null") {
++        // Invalid URL.
++        return false;
++      }
+       if (viewSettings.openEntityInNewTab) {
+         // Open a new window to show the details of the event.
+        window.open(thisEvent.url);
+@@ -242,6 +266,12 @@
+ 
+     }
+   }
++function datesRender (info) {
++    Drupal.attachBehaviors(info.el);
++  }
++  function datesDestroy (info) {
++    Drupal.detachBehaviors(info.el);
++  }
+ 
+   // Todo:
+   // Set up the weith for the behavior.
+@@ -262,13 +292,15 @@
+         })
+       }
+       else {
+-        $('.js-drupal-fullcalendar', context)
+-        .once("fullCalendarBehavior")
++        $(once('fullCalendarBehavior', '.js-drupal-fullcalendar', context))
+         .each(function() {
+           let calendarEl = this;
+           let viewIndex = parseInt(calendarEl.getAttribute("calendar-view-index"));
+           let viewSettings = drupalSettings.fullCalendarView[viewIndex];
+-          var calendarOptions = JSON.parse(viewSettings.calendar_options);
++          var calendarOptions = JSON.parse(viewSettings.calendar_options);// Switch default view at mobile widths.
++          if (calendarOptions.mobileWidth !== undefined && calendarOptions.defaultMobileView !== undefined && $(window).width() <= calendarOptions.mobileWidth) {
++           calendarOptions.initialView = calendarOptions.defaultMobileView;
++          }
+ 
+           // Bind the resize event handler.
+           calendarOptions.eventResize = eventResize;
+@@ -277,7 +309,8 @@
+           // Bind the event click handler.
+           calendarOptions.eventClick = eventClick;
+           // Bind the drop event handler.
+-          calendarOptions.eventDrop = eventDrop;
++          calendarOptions.eventDrop = eventDrop;// Trigger Drupal behaviors when calendar events are updated.
++          calendarOptions.datesSet = datesRender;
+           // Render HTML correctly.
+           calendarOptions.eventContent = function(eventInfo) {
+             if (eventInfo.timeText && eventInfo.timeText.length && eventInfo.view.type === 'dayGridMonth') {
+@@ -287,7 +320,13 @@
+           };
+           // Language select element.
+           var localeSelectorEl = document.getElementById('locale-selector-' + viewIndex);
+-          // Initial the calendar.
++          // Allow passing a default date via query string.
++          const params = (new URL(document.location)).searchParams;
++          const initialDate = params.get('initialDate')
++          if (initialDate) {
++            calendarOptions.initialDate = initialDate;
++          }
++          //Initial the calendar.
+           if (calendarEl) {
+             if (drupalSettings.calendar) {
+               drupalSettings.calendar[viewIndex] = new FullCalendar.Calendar(calendarEl, calendarOptions);
+@@ -381,4 +420,4 @@
+       }
+     }
+   };
+-})(jQuery, Drupal);
++})(jQuery, Drupal, once);
+diff --git a/src/FullcalendarViewPreprocess.php b/src/FullcalendarViewPreprocess.php
+index 553bdc89a511358f00dbd243c342be293fb37528..3b5af593eb3c4988e0013246e42def20ad571d44 100644
+--- a/src/FullcalendarViewPreprocess.php
++++ b/src/FullcalendarViewPreprocess.php
+@@ -73,6 +73,9 @@ class FullcalendarViewPreprocess {
+ 
+   /**
+    * Process the view variable array.
++   *
++   * @param array $variables
++   *   Template variables.
+    */
+   public function process(array &$variables) {
+     /* @var \Drupal\views\ViewExecutable $view */
+@@ -167,8 +170,8 @@ class FullcalendarViewPreprocess {
+     $start_field_option = $fields[$start_field]->options;
+     $end_field_option = empty($end_field) ? NULL : $fields[$end_field]->options;
+     // Custom timezone or user timezone.
+-    $timezone = !empty($start_field_option['settings']['timezone_override']) ?
+-    $start_field_option['settings']['timezone_override'] : date_default_timezone_get();
++    $timezone = !empty($start_field_option['settings']['timezone']) ?
++    $start_field_option['settings']['timezone'] : date_default_timezone_get();
+     // Set the first day setting.
+     $first_day = isset($options['firstDay']) ? intval($options['firstDay']) : 0;
+     // Left side buttons.
+@@ -195,6 +198,12 @@ class FullcalendarViewPreprocess {
+     // Update confirmation.
+     $updateConfirm = ($options['updateConfirm'] == '1' ? TRUE : FALSE);
+ 
++    // Slot Duration.
++    $slot_duration = empty($options['slotDuration']) ? '00:30:00' : Xss::filter($options['slotDuration']);
++    // Display time limit.
++    $minTime = !empty($options['minTime']) ? $options['minTime'] : '00:00:00';
++    $maxTime = !empty($options['maxTime']) ? $options['maxTime'] : '23:59:59';
++
+     $entries = [];
+ 
+     if (!empty($start_field)) {
+@@ -240,11 +249,17 @@ class FullcalendarViewPreprocess {
+         $end_dates = empty($end_field) || !$current_entity->hasField($end_field) ? '' :
+         $current_entity->get($end_field)->getValue();
+         // Render all other fields to so they can be used in rewrite.
+-        foreach ($fields as $name => $field) {
+-          if (method_exists($field, 'advancedRender')) {
+-            // Set the row_index property used by advancedRender function.
+-            $field->view->row_index = $row->index;
+-            $des = $field->advancedRender($row);
++        $des = [];
++        if (!empty($start_dates) && is_array($start_dates)) {
++          foreach ($start_dates as $i => $start_date) {
++            $idkey = $row->index . '-' . $i;
++            foreach ($fields as $name => $field) {
++              if (method_exists($field, 'advancedRender')) {
++                // Set the row_index property used by advancedRender function.
++                $field->view->row_index = preg_match('#^' . $start_field . '(_\d+)?$#', $name) ? $i : $row->index;
++                $des[$idkey] = $field->advancedRender($row);
++              }
++            }
+           }
+         }
+         // Event title.
+@@ -269,12 +284,13 @@ class FullcalendarViewPreprocess {
+         // For each date value.
+         if (!empty($start_dates) && is_array($start_dates)) {
+           foreach ($start_dates as $i => $start_date) {
++            $idkey = $row->index . '-' . $i;
+             $entry = [
+               'title' => Xss::filter($title, $title_allowed_tags),
+-              'id' => $row->index . "-$i",
++              'id' => $idkey,
+               'eid' => $entity_id,
+               'url' => $link_url,
+-              'des' => isset($des) ? $des : ''
++              'des' => $des[$idkey] ?? '',
+             ];
+             // Event duration.
+             if (!empty($duration_field) && !empty($fields[$duration_field])) {
+@@ -409,6 +425,9 @@ class FullcalendarViewPreprocess {
+       $calendar_options = [
+         'initialView' => $default_view,
+         'timeZone' => $timezone,
++        'defaultMobileView' => isset($options['default_mobile_view']) ? $options['default_mobile_view'] : 'listYear',
++        'mobileWidth' => isset($options['mobile_width']) ? $options['mobile_width'] : 768,
++        'initialDate' => empty($default_date) ? date('Y-m-d') : $default_date,
+         'headerToolbar' => [
+           'left' => $left_buttons,
+           'center' => 'title',
+@@ -417,6 +436,9 @@ class FullcalendarViewPreprocess {
+         'navLinks' => $nav_links,
+         'firstDay' => $first_day,
+         'moreLinkClick' => $more_event_link,
++        'minTime' => $minTime,
++        'maxTime' => $maxTime,
++        'locale' => $default_lang,
+         'events' => $entries,
+         // Limits the number of events displayed on a day.
+         'dayMaxEvents' => $event_limit,
+@@ -428,6 +450,8 @@ class FullcalendarViewPreprocess {
+           'startTime' => $business_hours_start,
+           'endTime' => $business_hours_end,
+         ],
++        'eventLimit' => isset($options['eventLimit']) ? intval($options['eventLimit']) : 2,
++        'slotDuration' => $slot_duration,
+       ];
+ 
+       // Dialog options.
+diff --git a/src/Plugin/views/style/FullCalendarDisplay.php b/src/Plugin/views/style/FullCalendarDisplay.php
+index e5ba5c8ec0ad8119837acae221400c3b4694d6da..bacf8fe786546d3e1cba62b0541190c4ebca545c 100644
+--- a/src/Plugin/views/style/FullCalendarDisplay.php
++++ b/src/Plugin/views/style/FullCalendarDisplay.php
+@@ -2,13 +2,17 @@
+ 
+ namespace Drupal\fullcalendar_view\Plugin\views\style;
+ 
+-use Drupal\field\Entity\FieldStorageConfig;
+-use Drupal\fullcalendar_view\TaxonomyColor;
+-use Drupal\core\form\FormStateInterface;
+-use Drupal\views\Plugin\views\style\StylePluginBase;
+ use Drupal\Component\Utility\Xss;
++use Drupal\Core\Datetime\DrupalDateTime;
++use Drupal\Core\Entity\EntityTypeBundleInfo;
++use Drupal\Core\Entity\EntityTypeManagerInterface;
++use Drupal\Core\Extension\ModuleHandlerInterface;
++use Drupal\core\form\FormStateInterface;
+ use Drupal\Core\Link;
+ use Drupal\Core\Url;
++use Drupal\field\Entity\FieldStorageConfig;
++use Drupal\fullcalendar_view\TaxonomyColor;
++use Drupal\views\Plugin\views\style\StylePluginBase;
+ use Symfony\Component\DependencyInjection\ContainerInterface;
+ 
+ /**
+@@ -32,13 +36,35 @@ class FullCalendarDisplay extends StylePluginBase {
+    * @var bool
+    */
+   protected $usesFields = TRUE;
++
+   /**
+-   * Taxonomy Colours.
++   * The taxonomy color service.
+    *
+-   * @var bool
++   * @var \Drupal\fullcalendar_view\TaxonomyColor
+    */
+   protected $taxonomyColorService;
+ 
++  /**
++   * The module handler service.
++   *
++   * @var \Drupal\Core\Extension\ModuleHandlerInterface
++   */
++  protected $moduleHandler;
++
++  /**
++   * The entity type manager.
++   *
++   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
++   */
++  protected $entityTypeManager;
++
++  /**
++   * The entity type bundle info.
++   *
++   * @var \Drupal\Core\Entity\EntityTypeBundleInfo
++   */
++  protected $entityTypeBundleInfo;
++
+   /**
+    * Constructs a PluginBase object.
+    *
+@@ -50,17 +76,42 @@ class FullCalendarDisplay extends StylePluginBase {
+    *   The plugin implementation definition.
+    * @param \Drupal\fullcalendar_view\TaxonomyColor $taxonomyColorService
+    *   The Taxonomy Color Service object.
++   * @param \Drupal\Core\Extension\ModuleHandlerInterface $module_handler
++   *   The Module Handler Service object.
++   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
++   *   The entity type manager.
++   * @param \Drupal\Core\Entity\EntityTypeBundleInfo $entity_type_bundle_info
++   *   The entity type bundle info.
+    */
+-  public function __construct(array $configuration, $plugin_id, $plugin_definition, TaxonomyColor $taxonomyColorService) {
++  public function __construct(
++    array $configuration,
++    $plugin_id,
++    $plugin_definition,
++    TaxonomyColor $taxonomyColorService,
++    ModuleHandlerInterface $module_handler,
++    EntityTypeManagerInterface $entity_type_manager,
++    EntityTypeBundleInfo $entity_type_bundle_info
++  ) {
+     parent::__construct($configuration, $plugin_id, $plugin_definition);
+     $this->taxonomyColorService = $taxonomyColorService;
++    $this->moduleHandler = $module_handler;
++    $this->entityTypeManager = $entity_type_manager;
++    $this->entityTypeBundleInfo = $entity_type_bundle_info;
+   }
+ 
+   /**
+    * {@inheritdoc}
+    */
+   public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
+-    return new static($configuration, $plugin_id, $plugin_definition, $container->get('fullcalendar_view.taxonomy_color'));
++    return new static(
++      $configuration,
++      $plugin_id,
++      $plugin_definition,
++      $container->get('fullcalendar_view.taxonomy_color'),
++      $container->get('module_handler'),
++      $container->get('entity_type.manager'),
++      $container->get('entity_type.bundle.info')
++    );
+   }
+ 
+   /**
+@@ -90,6 +141,8 @@ class FullCalendarDisplay extends StylePluginBase {
+       'default' => 'day',
+     ];
+     $options['default_view'] = ['default' => 'dayGridMonth'];
++    $options['default_mobile_view'] = ['default' => 'listYear'];
++    $options['mobile_width'] = ['default' => 768];
+     $options['nav_links'] = ['default' => 1];
+     $options['timeFormat'] = ['default' => 'hh:mm a'];
+     $options['defaultLanguage'] = ['default' => 'en'];
+@@ -99,7 +152,11 @@ class FullCalendarDisplay extends StylePluginBase {
+     $options['updateConfirm'] = ['default' => 1];
+     $options['createEventLink'] = ['default' => 0];
+     $options['openEntityInNewTab'] = ['default' => 1];
++    $options['dialogModal'] = ['default' => 0];
+     $options['eventLimit'] = ['default' => 2];
++    $options['slotDuration'] = ['default' => '00:30:00'];
++    $options['minTime'] = ['default' => '00:00:00'];
++    $options['maxTime'] = ['default' => '23:59:59'];
+     return $options;
+   }
+ 
+@@ -225,6 +282,30 @@ class FullCalendarDisplay extends StylePluginBase {
+       '#default_value' => (empty($this->options['default_view'])) ? 'month' : $this->options['default_view'],
+       '#title' => $this->t('Default view'),
+     ];
++    // Default mobile view.
++    $form['default_mobile_view'] = [
++      '#type' => 'radios',
++      '#fieldset' => 'display',
++      '#options' => [
++        'dayGridMonth' => $this->t('Month'),
++        'timeGridWeek' => $this->t('Week'),
++        'timeGridDay' => $this->t('Day'),
++        'listWeek' => $this->t('List Week'),
++        'listMonth' => $this->t('List Month'),
++        'listYear' => $this->t('List Year'),
++      ],
++      '#default_value' => (empty($this->options['default_mobile_view'])) ? 'month' : $this->options['default_mobile_view'],
++      '#title' => $this->t('Default mobile view'),
++    ];
++    // Mobile width.
++    $form['mobile_width'] = [
++      '#fieldset' => 'display',
++      '#type' => 'textfield',
++      '#title' => $this->t('Mobile maximum width'),
++      '#default_value' => (isset($this->options['mobile_width'])) ? $this->options['mobile_width'] : 768,
++      '#size' => 4,
++    ];
++
+     // First day.
+     $form['firstDay'] = [
+       '#type' => 'select',
+@@ -241,6 +322,26 @@ class FullCalendarDisplay extends StylePluginBase {
+       '#default_value' => (empty($this->options['firstDay'])) ? '0' : $this->options['firstDay'],
+       '#title' => $this->t('First Day'),
+     ];
++    // MinTime
++    $form['minTime'] = [
++      '#type' => 'datetime',
++      '#fieldset' => 'display',
++      '#title' => $this->t('Start time'),
++      '#date_date_element' => 'none',
++      '#date_time_element' => 'time',
++      '#default_value' => new DrupalDateTime(!empty($this->options['minTime']) ? $this->options['minTime'] : '2000-01-01 00:00:00'),
++      '#required' => TRUE,
++    ];
++    // MaxTime
++    $form['maxTime'] = [
++      '#type' => 'datetime',
++      '#fieldset' => 'display',
++      '#title' => $this->t('End time'),
++      '#date_date_element' => 'none',
++      '#date_time_element' => 'time',
++      '#default_value' => new DrupalDateTime(!empty($this->options['maxTime']) ? $this->options['maxTime'] : '2000-01-01 23:59:59'),
++      '#required' => TRUE,
++    ];
+     // Nav Links.
+     $form['nav_links'] = [
+       '#type' => 'checkbox',
+@@ -255,9 +356,9 @@ class FullCalendarDisplay extends StylePluginBase {
+       '#type' => 'textfield',
+       '#title' => $this->t('Time Format settings for month view'),
+       '#default_value' => (isset($this->options['timeFormat'])) ? $this->options['timeFormat'] : 'hh:mm a',
+-      '#description' => $this->t('See %momentjs_doc for available formatting options. <br />Leave it blank to use the default format "hh:mm a".', [
+-        '%momentjs_doc' => Link::fromTextAndUrl($this->t('MomentJSâ€™s formatting characters'), Url::fromUri('http://momentjs.com/docs/#/displaying/format/', ['attributes' => ['target' => '_blank']]))->toString(),
+-      ]),
++      '#description' => $this->t('See %momentjs_doc for available formatting options. <br />Leave it blank to use the default format "hh:mm a".<br />Set it to [ ] if you do not want Fullcalendar View to prepend Title Field with any time at all.', array(
++        '%momentjs_doc' => Link::fromTextAndUrl($this->t('MomentJSâ€™s formatting characters'), Url::fromUri('http://momentjs.com/docs/#/displaying/format/', array('attributes' => array('target' => '_blank'))))->toString(),
++      )),
+       '#size' => 20,
+     ];
+     // Allow/disallow event overlap.
+@@ -418,6 +519,13 @@ class FullCalendarDisplay extends StylePluginBase {
+       '#default_value' => !isset($this->options['openEntityInNewTab']) ? 1 : $this->options['openEntityInNewTab'],
+       '#title' => $this->t('Open entities (calendar items) into new tabs'),
+     ];
++    // Open event link target in modal popup.
++    $form['dialogModal'] = [
++      '#type' => 'checkbox',
++      '#fieldset' => 'display',
++      '#default_value' => !isset($this->options['dialogModal']) ? 1 : $this->options['dialogModal'],
++      '#title' => $this->t('Open event title link target in a modal popup'),
++    ];
+     // Create new event link.
+     $form['createEventLink'] = [
+       '#type' => 'checkbox',
+@@ -432,11 +540,20 @@ class FullCalendarDisplay extends StylePluginBase {
+       '#title' => $this->t('Legend Colors'),
+       '#description' => $this->t('Set color value of legends for each content type or each taxonomy.'),
+     ];
++    $form['slotDuration'] = [
++      '#type' => 'textfield',
++      '#fieldset' => 'display',
++      '#title' => $this->t('Slot duration'),
++      '#description' => $this->t('The frequency for displaying time slots.'),
++      '#size' => 8,
++      '#maxlength' => 8,
++      '#default_value' => (isset($this->options['slotDuration'])) ? $this->options['slotDuration'] : '00:30:00',
++    ];
+ 
+-    $moduleHandler = \Drupal::service('module_handler');
++    $moduleHandler = $this->moduleHandler;
+     if ($moduleHandler->moduleExists('taxonomy')) {
+       // All vocabularies.
+-      $cabNames = taxonomy_vocabulary_get_names();
++      $cabNames = $this->entityTypeManager->getStorage('taxonomy_vocabulary')->getQuery()->accessCheck(TRUE)->execute();
+       // Taxonomy reference field.
+       $tax_fields = [];
+       // Find out all taxonomy reference fields of this View.
+@@ -476,7 +593,7 @@ class FullCalendarDisplay extends StylePluginBase {
+           ],
+         ],
+         '#ajax' => [
+-          'callback' => 'Drupal\fullcalendar_view\Plugin\views\style\FullCalendarDisplay::taxonomyColorCallback',
++          'callback' => [static::class, 'taxonomyColorCallback'],
+           'event' => 'change',
+           'wrapper' => 'color-taxonomies-div',
+           'progress' => [
+@@ -499,7 +616,7 @@ class FullCalendarDisplay extends StylePluginBase {
+       '#fieldset' => 'colors',
+     ];
+     // All bundle types.
+-    $bundles = \Drupal::service('entity_type.bundle.info')->getBundleInfo($entity_type);
++    $bundles = $this->entityTypeBundleInfo->getBundleInfo($entity_type);
+     // Options list.
+     $bundlesList = [];
+     foreach ($bundles as $id => $bundle) {
+@@ -584,6 +701,9 @@ class FullCalendarDisplay extends StylePluginBase {
+         $options['color_taxonomies'][Xss::filter($id)] = Xss::filter($color);
+       }
+     }
++    $options['minTime'] = $options['minTime']->format("H:i:s");
++    $options['maxTime'] = $options['maxTime']->format("H:i:s");
++    $options['right_buttons'] = isset($options['right_buttons']) ? implode(',', array_filter(array_values($options['right_buttons']))) : 'dayGridMonth,timeGridWeek,timeGridDay,listYear';
+ 
+     // Sanitize user input.
+     $options['timeFormat'] = Xss::filter($options['timeFormat']);
+@@ -597,6 +717,8 @@ class FullCalendarDisplay extends StylePluginBase {
+   public static function taxonomyColorCallback(array &$form, FormStateInterface $form_state) {
+     $options = $form_state->getValue('style_options');
+     $vid = $options['vocabularies'];
++    // This is a static function,
++    // has to get the service in this way.
+     $taxonomy_color_service = \Drupal::service('fullcalendar_view.taxonomy_color');
+ 
+     if (isset($options['color_taxonomies'])) {
+diff --git a/src/TaxonomyColor.php b/src/TaxonomyColor.php
+index 524cae5ba9a157bb8c05315af446a459329a2128..c25f5660fcdb40fb797e6dd1e12e8882132bf814 100644
+--- a/src/TaxonomyColor.php
++++ b/src/TaxonomyColor.php
+@@ -85,7 +85,7 @@ class TaxonomyColor {
+     if (!isset($terms[$vid])) {
+       // Get terms Ids.
+       $query = $this->entityTypeManager->getStorage('taxonomy_term')->getQuery();
+-      $query->condition('vid', $vid);
++      $query->condition('vid', $vid)->accessCheck(TRUE);
+       $tids = $query->execute();
+       $terms[$vid] = $this->entityTypeManager->getStorage('taxonomy_term')->loadMultiple($tids);
+     }
