@@ -6,7 +6,7 @@ index e975fb4d848c62d69eaa51968f165b43a6c1808b..611327d48d90555e724e0a910f48f8c6
   * Fullcalendar View plugin JavaScript file.
   */
  
--(function($, Drupal) {
+-(function($) {
 +(function($, Drupal, once) {
    var initialLocaleCode = 'en';
    // Dialog index.
