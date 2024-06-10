@@ -1,9 +1,9 @@
 diff --git a/dist/css/components/toolbar.css b/dist/css/components/toolbar.css
-index d18f1bc..1e2560b 100644
+index fd9dc96..ce2a139 100644
 --- a/dist/css/components/toolbar.css
 +++ b/dist/css/components/toolbar.css
-@@ -310,6 +310,11 @@ body.gin--classic-toolbar {
-           mask-image: url("../../media/sprite.svg#shortcut-view");
+@@ -373,6 +373,11 @@ body.gin--classic-toolbar {
+   --icon: url("../../media/sprite.svg#hamburger-view");
  }
  
 +.toolbar .toolbar-bar .toolbar-icon-asterisk:before {
@@ -11,6 +11,6 @@ index d18f1bc..1e2560b 100644
 +          mask-image: url("../../media/sprite.svg#asterisk-view");
 +}
 +
- .toolbar .toolbar-bar .toolbar-icon-coffee:before,
- .toolbar .toolbar-bar #toolbar-item-administration-search:before {
-   -webkit-mask-image: url("../../media/sprite.svg#search-view");
+ .toolbar .toolbar-bar .toolbar-icon-coffee::before,
+ .toolbar .toolbar-bar #toolbar-item-administration-search::before,
+ .toolbar .toolbar-bar #admin-toolbar-mobile-search-tab .toolbar-icon::before,
