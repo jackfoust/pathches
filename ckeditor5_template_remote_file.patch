@@ -1,0 +1,17 @@
+diff --git a/src/Plugin/CKEditor5Plugin/Template.php b/src/Plugin/CKEditor5Plugin/Template.php
+index cd3324e..f7d8866 100644
+--- a/src/Plugin/CKEditor5Plugin/Template.php
++++ b/src/Plugin/CKEditor5Plugin/Template.php
+@@ -54,9 +54,9 @@ class Template extends CKEditor5PluginDefault implements CKEditor5PluginConfigur
+    * {@inheritdoc}
+    */
+   public function validateConfigurationForm(array &$form, FormStateInterface $form_state) {
+-    if (!file_exists(DRUPAL_ROOT . $form_state->getValue('file_path'))) {
+-      $form_state->setErrorByName('file_path', 'Template file not found.');
+-    }
++    #if (!file_exists(DRUPAL_ROOT . $form_state->getValue('file_path'))) {
++    #  $form_state->setErrorByName('file_path', 'Template file not found.');
++    #}
+   }
+ 
+   /**
