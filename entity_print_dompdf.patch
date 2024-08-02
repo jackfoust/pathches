@@ -14,8 +14,8 @@ index a6d6db8..6b71ffe 100644
          $this->dompdf->render();
          $this->hasRendered = TRUE;
 +        if(!empty($str) && (str_contains($str,'webform-element') || str_contains($str,'webform-codemirror-runmode'))) {
-+          $font = $this->dompdf->getFontMetrics()->get_font("helvetica", "regular");
-+          $this->dompdf->getCanvas()->page_text(6, 6, "DOCUMENT ID: $timestamp - Page {PAGE_NUM} of {PAGE_COUNT}", $font, 10, array(0,0,0));
++          $font = $this->dompdf->getFontMetrics()->getFont("helvetica", "regular");
++          $this->dompdf->getCanvas()->page_text(6, 6, "DOCUMENT ID: $timestamp - Page {PAGE_NUM} of {PAGE_COUNT}", $font, 6, array(0,0,0));
 +        }
        }
        catch (DompdfLibException $e) {
