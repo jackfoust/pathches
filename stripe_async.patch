@@ -1,0 +1,21 @@
+diff --git a/stripe.libraries.yml b/stripe.libraries.yml
+index 5299165..bba5439 100644
+--- a/stripe.libraries.yml
++++ b/stripe.libraries.yml
+@@ -3,14 +3,14 @@ stripe.js:
+   license:
+     name: Propietary
+   js:
+-    https://js.stripe.com/v3/: { type: external, minified: true }
++    https://js.stripe.com/v3/: { type: external, minified: true, attributes: { async: true } }
+ 
+ stripe:
+   css:
+     state:
+       css/stripe.css: {}
+   js:
+-    js/stripe.js: {}
++    js/stripe.js: { attributes: { async: true } }
+   dependencies:
+     - stripe/stripe.js
+     - core/drupal
