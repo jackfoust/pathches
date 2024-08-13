@@ -1,0 +1,16 @@
+diff --git a/stripe.module b/stripe.module
+index 1b96ea6..ff6a532 100644
+--- a/stripe.module
++++ b/stripe.module
+@@ -48,7 +48,10 @@ function stripe_theme() {
+  * @see https://stripe.com/docs/stripe.js
+  */
+ function stripe_page_attachments(array &$page) {
+-  $page['#attached']['library'][] = 'stripe/stripe';
++  $wp_config = \Drupal::config('webpresence.advanced_settings');
++  if (empty($wp_config->get('stripe_disable_fraud_protection'))) {
++    $page['#attached']['library'][] = 'stripe/stripe';
++  }
+ }
+ 
+ /**
