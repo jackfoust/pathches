@@ -8,7 +8,7 @@ index 1b96ea6..ff6a532 100644
  function stripe_page_attachments(array &$page) {
 -  $page['#attached']['library'][] = 'stripe/stripe';
 +  $wp_config = \Drupal::config('webpresence.advanced_settings');
-+  if (empty($wp_config->get('stripe_disable_fraud_protection'))) {
++  if (empty($wp_config->get('disable_stripe_fraud_protection'))) {
 +    $page['#attached']['library'][] = 'stripe/stripe';
 +  }
  }
