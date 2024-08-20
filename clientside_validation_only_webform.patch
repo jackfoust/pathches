@@ -1,0 +1,15 @@
+diff --git a/clientside_validation.module b/clientside_validation.module
+index 50fa8b3..c0e00a0 100644
+--- a/clientside_validation.module
++++ b/clientside_validation.module
+@@ -12,7 +12,9 @@ use Drupal\Core\Render\Element;
+  * Implements hook_form_alter().
+  */
+ function clientside_validation_form_alter(&$form, FormStateInterface &$form_state, $form_id) {
+-  $form['#after_build'][] = 'clientside_validation_form_after_build';
++  if(!empty($form['#webform_id'])) {
++    $form['#after_build'][] = 'clientside_validation_form_after_build';
++  }
+ }
+ 
+ /**
