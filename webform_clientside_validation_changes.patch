@@ -1,0 +1,12 @@
+diff --git a/modules/webform_clientside_validation/js/webform_clientside_validation.ife.js b/modules/webform_clientside_validation/js/webform_clientside_validation.ife.js
+index a4f0523c4..76fe05728 100644
+--- a/modules/webform_clientside_validation/js/webform_clientside_validation.ife.js
++++ b/modules/webform_clientside_validation/js/webform_clientside_validation.ife.js
+@@ -66,6 +66,7 @@
+       var selectors = [
+         '.form-checkboxes',
+         '.form-radios',
++        '.js-webform-radios',
+         '.form-boolean-group',
+         '.form-type-datelist .container-inline',
+         '.form-type-tel',
