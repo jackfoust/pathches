@@ -7,7 +7,7 @@ index 5299165..bba5439 100644
      name: Propietary
    js:
 -    https://js.stripe.com/v3/: { type: external, minified: true }
-+    https://js.stripe.com/v3/: { type: external, minified: true, preprocess: false }
++    https://js.stripe.com/v3/: { type: external, preprocess: false, minified: true }
  
  stripe:
    css:
@@ -15,7 +15,7 @@ index 5299165..bba5439 100644
        css/stripe.css: {}
    js:
 -    js/stripe.js: {}
-+    js/stripe.js: { preprocess: false }
++    js/stripe.js: { preprocess: false, minified: true }
    dependencies:
      - stripe/stripe.js
      - core/drupal
