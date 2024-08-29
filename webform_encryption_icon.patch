@@ -1,0 +1,20 @@
+diff --git a/modules/webform_ui/src/WebformUiEntityElementsForm.php b/modules/webform_ui/src/WebformUiEntityElementsForm.php
+index 9cb6fb78d..5958ea540 100644
+--- a/modules/webform_ui/src/WebformUiEntityElementsForm.php
++++ b/modules/webform_ui/src/WebformUiEntityElementsForm.php
+@@ -437,6 +437,7 @@ class WebformUiEntityElementsForm extends BundleEntityFormBase {
+   protected function getElementRow(array $element, $delta, array $parent_options) {
+     /** @var \Drupal\webform\WebformInterface $webform */
+     $webform = $this->getEntity();
++    $enc = in_array($element['#webform_key'],array_keys($webform->getThirdPartySettings('webform_encrypt')['element'])) ? TRUE : FALSE;
+ 
+     $row = [];
+ 
+@@ -507,6 +508,7 @@ class WebformUiEntityElementsForm extends BundleEntityFormBase {
+           'key' => $key,
+         ]),
+         '#attributes' => $offcanvas_dialog_attributes,
++        '#suffix' => $enc ? '&nbsp;<i class="fa-solid fa-lock"></i>' : '',
+         '#prefix' => !empty($indentation) ? $this->renderer->renderPlain($indentation) : '',
+       ],
+     ];
