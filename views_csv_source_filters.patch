@@ -1,0 +1,13 @@
+diff --git a/src/Query/Select.php b/src/Query/Select.php
+index 3ce0e63..7c57b24 100644
+--- a/src/Query/Select.php
++++ b/src/Query/Select.php
+@@ -756,7 +756,7 @@ class Select {
+     return match($operator) {
+       '=' => $record_value == $condition_value,
+       '!=', '<>' => $record_value != $condition_value,
+-      'contains' => stripos($record_value, $condition_value) !== FALSE,
++      'contains' => stripos($record_value, $condition_value[0]) !== FALSE,
+       'starts' => str_starts_with($record_value, $condition_value),
+       'not_starts' => !str_starts_with($record_value, $condition_value),
+       'ends' => !(strlen($condition_value) > 0) || str_ends_with($record_value, $condition_value),
