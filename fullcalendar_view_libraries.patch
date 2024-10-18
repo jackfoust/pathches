@@ -64,7 +64,7 @@ index e0b71a6..872ebbb 100644
 +    /libraries/fullcalendar/packages/core/locales-all.min.js: { minified: true }
 +    /libraries/fullcalendar/packages/moment/main.min.js: {minified: true}
 +    /libraries/fullcalendar/packages/daygrid/main.min.js: { minified: true }
-+    /libraries/fullcalendar/packages/interaction/main.min.js: { minified: true } 
++    /libraries/fullcalendar/packages/interaction/main.min.js: { minified: true }
 +    /libraries/fullcalendar/packages/timegrid/main.min.js: { minified: true }
 +    /libraries/fullcalendar/packages/list/main.min.js: { minified: true }
 +    /libraries/fullcalendar/packages/rrule/main.min.js: { minified: true }
