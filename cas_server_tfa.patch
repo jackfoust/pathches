@@ -1,15 +1,16 @@
 diff --git a/src/Controller/UserActionController.php b/src/Controller/UserActionController.php
-index f939cb8..840f1e5 100644
+index f939cb8..6f6c18a 100644
 --- a/src/Controller/UserActionController.php
 +++ b/src/Controller/UserActionController.php
-@@ -135,6 +135,10 @@ class UserActionController implements ContainerInjectionInterface {
-       return $response;
-     }
- 
+@@ -63,6 +63,11 @@ class UserActionController implements ContainerInjectionInterface {
+    */
+   public function login(): TrustedRedirectResponse|array {
+     $this->killSwitch->trigger();
++
 +    if(empty($this->currentUser)) {
-+      return \Drupal\Core\Access\AccessResult::forbidden();
++      return $this->generateNotPermittedMessage();
 +    }
 +
-     // Present the user with a login form.
-     return $this->formBuilder->getForm(
-       '\Drupal\cas_server\Form\UserLogin',
+     $request = $this->requestStack->getCurrentRequest();
+     $service = $request->query->has('service') ? $request->query->get('service') : NULL;
+     $service_entity = $this->configHelper->loadServiceFromUri($service);
