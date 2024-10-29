@@ -1,5 +1,5 @@
 diff --git a/src/Controller/UserActionController.php b/src/Controller/UserActionController.php
-index f939cb8..6f6c18a 100644
+index f939cb8..4539a6a 100644
 --- a/src/Controller/UserActionController.php
 +++ b/src/Controller/UserActionController.php
 @@ -63,6 +63,11 @@ class UserActionController implements ContainerInjectionInterface {
@@ -7,7 +7,7 @@ index f939cb8..6f6c18a 100644
    public function login(): TrustedRedirectResponse|array {
      $this->killSwitch->trigger();
 +
-+    if(empty($this->currentUser)) {
++    if($this->currentUser->isAuthenticated()) {
 +      return $this->generateNotPermittedMessage();
 +    }
 +
