@@ -1,12 +1,12 @@
 diff --git a/src/Controller/UserActionController.php b/src/Controller/UserActionController.php
-index f939cb8..ab0f3dc 100644
+index f939cb8..840f1e5 100644
 --- a/src/Controller/UserActionController.php
 +++ b/src/Controller/UserActionController.php
 @@ -135,6 +135,10 @@ class UserActionController implements ContainerInjectionInterface {
        return $response;
      }
  
-+    if(!$this->currentUser->isAuthenticated()) {
++    if(empty($this->currentUser)) {
 +      return \Drupal\Core\Access\AccessResult::forbidden();
 +    }
 +
