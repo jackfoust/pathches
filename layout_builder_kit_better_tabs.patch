@@ -15,6 +15,6 @@ index 6954f5c..ab5fdf5 100755
          'wrapper' => 'items-fieldset-wrapper',
        ],
        '#weight' => 10,
-+      '#access' -> FALSE,
++      '#access' => FALSE,
        '#suffix' => '</div>',
      ];
