@@ -1,3 +1,2039 @@
+diff --git a/composer.json b/composer.json
+index ce640a0..db699bf 100755
+--- a/composer.json
++++ b/composer.json
+@@ -17,7 +17,6 @@
+     }
+   },
+   "require": {
+-    "drupal/default_content": "^2",
+     "drupal/hook_event_dispatcher": "^4"
+   }
+ }
+diff --git a/layout_builder_kit.info.yml b/layout_builder_kit.info.yml
+index ea113c2..3d1cb3e 100755
+--- a/layout_builder_kit.info.yml
++++ b/layout_builder_kit.info.yml
+@@ -1,7 +1,7 @@
+ name: 'Layout Builder Kit'
+ type: module
+ description: 'Contains components useful when building pages in Layout Builder.'
+-core_version_requirement: ^10
++core_version_requirement: ^10 || ^11
+ configure: layout_builder_kit.layout_builder_kit_settings
+ package: 'Layout Builder Kit'
+ dependencies:
+diff --git a/modules/layout_builder_kit_demo/composer.json b/modules/layout_builder_kit_demo/composer.json
+deleted file mode 100644
+index 675ef65..0000000
+--- a/modules/layout_builder_kit_demo/composer.json
++++ /dev/null
+@@ -1,17 +0,0 @@
+-{
+-  "name": "drupal/layout_builder_kit_demo",
+-  "type": "drupal-module",
+-  "description": "Examples of components in the kit.'",
+-  "keywords": ["Drupal"],
+-  "license": "GPL-2.0+",
+-  "minimum-stability": "dev",
+-  "repositories": {
+-    "drupal": {
+-      "type": "composer",
+-      "url": "https://packages.drupal.org/8"
+-    }
+-  },
+-  "require": {
+-    "drupal/default_content": "^2"
+-  }
+-}
+diff --git a/modules/layout_builder_kit_demo/config/install/core.entity_form_display.node.lbk_example.default.yml b/modules/layout_builder_kit_demo/config/install/core.entity_form_display.node.lbk_example.default.yml
+deleted file mode 100644
+index f3bdc15..0000000
+--- a/modules/layout_builder_kit_demo/config/install/core.entity_form_display.node.lbk_example.default.yml
++++ /dev/null
+@@ -1,112 +0,0 @@
+-uuid: 1038cb87-743b-4494-934d-8acb95be9b4f
+-langcode: en
+-status: true
+-dependencies:
+-  config:
+-    - field.field.node.lbk_example.body
+-    - field.field.node.lbk_example.field_video_file
+-    - field.field.node.lbk_example.field_video_link
+-    - field.field.node.lbk_example.field_video_text_formatted
+-    - field.field.node.lbk_example.field_video_text_plain
+-    - node.type.lbk_example
+-  module:
+-    - file
+-    - link
+-    - path
+-    - text
+-id: node.lbk_example.default
+-targetEntityType: node
+-bundle: lbk_example
+-mode: default
+-content:
+-  body:
+-    type: text_textarea_with_summary
+-    weight: 121
+-    settings:
+-      rows: 9
+-      summary_rows: 3
+-      placeholder: ''
+-    third_party_settings: {  }
+-    region: content
+-  created:
+-    type: datetime_timestamp
+-    weight: 10
+-    region: content
+-    settings: {  }
+-    third_party_settings: {  }
+-  field_video_file:
+-    weight: 122
+-    settings:
+-      progress_indicator: throbber
+-    third_party_settings: {  }
+-    type: file_generic
+-    region: content
+-  field_video_link:
+-    weight: 125
+-    settings:
+-      placeholder_url: ''
+-      placeholder_title: ''
+-    third_party_settings: {  }
+-    type: link_default
+-    region: content
+-  field_video_text_formatted:
+-    weight: 124
+-    settings:
+-      size: 60
+-      placeholder: ''
+-    third_party_settings: {  }
+-    type: text_textfield
+-    region: content
+-  field_video_text_plain:
+-    weight: 123
+-    settings:
+-      size: 60
+-      placeholder: ''
+-    third_party_settings: {  }
+-    type: string_textfield
+-    region: content
+-  path:
+-    type: path
+-    weight: 30
+-    region: content
+-    settings: {  }
+-    third_party_settings: {  }
+-  promote:
+-    type: boolean_checkbox
+-    settings:
+-      display_label: true
+-    weight: 15
+-    region: content
+-    third_party_settings: {  }
+-  status:
+-    type: boolean_checkbox
+-    settings:
+-      display_label: true
+-    weight: 120
+-    region: content
+-    third_party_settings: {  }
+-  sticky:
+-    type: boolean_checkbox
+-    settings:
+-      display_label: true
+-    weight: 16
+-    region: content
+-    third_party_settings: {  }
+-  title:
+-    type: string_textfield
+-    weight: -5
+-    region: content
+-    settings:
+-      size: 60
+-      placeholder: ''
+-    third_party_settings: {  }
+-  uid:
+-    type: entity_reference_autocomplete
+-    weight: 5
+-    settings:
+-      match_operator: CONTAINS
+-      size: 60
+-      placeholder: ''
+-    region: content
+-    third_party_settings: {  }
+-hidden: {  }
+diff --git a/modules/layout_builder_kit_demo/config/install/core.entity_view_display.node.lbk_example.default.yml b/modules/layout_builder_kit_demo/config/install/core.entity_view_display.node.lbk_example.default.yml
+deleted file mode 100644
+index 4af3a94..0000000
+--- a/modules/layout_builder_kit_demo/config/install/core.entity_view_display.node.lbk_example.default.yml
++++ /dev/null
+@@ -1,83 +0,0 @@
+-uuid: 58f2411f-2e2e-4a63-8af8-420d9469540c
+-langcode: en
+-status: true
+-dependencies:
+-  config:
+-    - field.field.node.lbk_example.body
+-    - field.field.node.lbk_example.field_video_file
+-    - field.field.node.lbk_example.field_video_link
+-    - field.field.node.lbk_example.field_video_text_formatted
+-    - field.field.node.lbk_example.field_video_text_plain
+-    - field.field.node.lbk_example.layout_builder__layout
+-    - node.type.lbk_example
+-  module:
+-    - file
+-    - layout_builder
+-    - layout_discovery
+-    - link
+-    - text
+-    - user
+-third_party_settings:
+-  layout_builder:
+-    allow_custom: true
+-    enabled: true
+-    sections:
+-      -
+-        layout_id: layout_onecol
+-        layout_settings: {  }
+-        components: {  }
+-        third_party_settings: {  }
+-id: node.lbk_example.default
+-targetEntityType: node
+-bundle: lbk_example
+-mode: default
+-content:
+-  body:
+-    label: hidden
+-    type: text_default
+-    weight: 101
+-    settings: {  }
+-    third_party_settings: {  }
+-    region: content
+-  field_video_file:
+-    weight: 102
+-    label: above
+-    settings:
+-      use_description_as_link_text: true
+-    third_party_settings: {  }
+-    type: file_default
+-    region: content
+-  field_video_link:
+-    weight: 105
+-    label: above
+-    settings:
+-      trim_length: 80
+-      url_only: false
+-      url_plain: false
+-      rel: ''
+-      target: ''
+-    third_party_settings: {  }
+-    type: link
+-    region: content
+-  field_video_text_formatted:
+-    weight: 104
+-    label: above
+-    settings: {  }
+-    third_party_settings: {  }
+-    type: text_default
+-    region: content
+-  field_video_text_plain:
+-    weight: 103
+-    label: above
+-    settings:
+-      link_to_entity: false
+-    third_party_settings: {  }
+-    type: string
+-    region: content
+-  links:
+-    weight: 100
+-    settings: {  }
+-    third_party_settings: {  }
+-    region: content
+-hidden:
+-  layout_builder__layout: true
+diff --git a/modules/layout_builder_kit_demo/config/install/core.entity_view_display.node.lbk_example.teaser.yml b/modules/layout_builder_kit_demo/config/install/core.entity_view_display.node.lbk_example.teaser.yml
+deleted file mode 100644
+index 5b922d9..0000000
+--- a/modules/layout_builder_kit_demo/config/install/core.entity_view_display.node.lbk_example.teaser.yml
++++ /dev/null
+@@ -1,30 +0,0 @@
+-uuid: 3b611fb8-3a05-48a1-a704-e25e16cbaaf4
+-langcode: en
+-status: true
+-dependencies:
+-  config:
+-    - core.entity_view_mode.node.teaser
+-    - field.field.node.lbk_example.body
+-    - node.type.lbk_example
+-  module:
+-    - text
+-    - user
+-id: node.lbk_example.teaser
+-targetEntityType: node
+-bundle: lbk_example
+-mode: teaser
+-content:
+-  body:
+-    label: hidden
+-    type: text_summary_or_trimmed
+-    weight: 101
+-    settings:
+-      trim_length: 600
+-    third_party_settings: {  }
+-    region: content
+-  links:
+-    weight: 100
+-    settings: {  }
+-    third_party_settings: {  }
+-    region: content
+-hidden: {  }
+diff --git a/modules/layout_builder_kit_demo/config/install/field.field.node.book.field_book_description.yml b/modules/layout_builder_kit_demo/config/install/field.field.node.book.field_book_description.yml
+deleted file mode 100644
+index 24c3742..0000000
+--- a/modules/layout_builder_kit_demo/config/install/field.field.node.book.field_book_description.yml
++++ /dev/null
+@@ -1,21 +0,0 @@
+-uuid: ef8fe839-690e-44be-b0e7-1b304d8360ab
+-langcode: en
+-status: true
+-dependencies:
+-  config:
+-    - field.storage.node.field_book_description
+-    - node.type.book
+-  module:
+-    - text
+-id: node.book.field_book_description
+-field_name: field_book_description
+-entity_type: node
+-bundle: book
+-label: 'Book Description'
+-description: ''
+-required: false
+-translatable: false
+-default_value: {  }
+-default_value_callback: ''
+-settings: {  }
+-field_type: text
+diff --git a/modules/layout_builder_kit_demo/config/install/field.field.node.lbk_example.body.yml b/modules/layout_builder_kit_demo/config/install/field.field.node.lbk_example.body.yml
+deleted file mode 100644
+index f84307f..0000000
+--- a/modules/layout_builder_kit_demo/config/install/field.field.node.lbk_example.body.yml
++++ /dev/null
+@@ -1,22 +0,0 @@
+-uuid: 314dde3e-d146-4ea0-a9e2-a812915a41c0
+-langcode: en
+-status: true
+-dependencies:
+-  config:
+-    - field.storage.node.body
+-    - node.type.lbk_example
+-  module:
+-    - text
+-id: node.lbk_example.body
+-field_name: body
+-entity_type: node
+-bundle: lbk_example
+-label: Body
+-description: ''
+-required: false
+-translatable: true
+-default_value: {  }
+-default_value_callback: ''
+-settings:
+-  display_summary: true
+-field_type: text_with_summary
+diff --git a/modules/layout_builder_kit_demo/config/install/field.field.node.lbk_example.field_video_file.yml b/modules/layout_builder_kit_demo/config/install/field.field.node.lbk_example.field_video_file.yml
+deleted file mode 100644
+index 7bc81ac..0000000
+--- a/modules/layout_builder_kit_demo/config/install/field.field.node.lbk_example.field_video_file.yml
++++ /dev/null
+@@ -1,29 +0,0 @@
+-uuid: 66030c9c-7fbc-42fa-b65e-3f09d6915b4f
+-langcode: en
+-status: true
+-dependencies:
+-  config:
+-    - field.storage.node.field_video_file
+-    - node.type.lbk_example
+-  module:
+-    - file
+-_core:
+-  default_config_hash: SFq2GRgk2BOiBZUf1sFSzoAT0znaXS7WHSOgUTHtsbA
+-id: node.lbk_example.field_video_file
+-field_name: field_video_file
+-entity_type: node
+-bundle: lbk_example
+-label: 'Video File'
+-description: ''
+-required: false
+-translatable: false
+-default_value: {  }
+-default_value_callback: ''
+-settings:
+-  file_directory: '[date:custom:Y]-[date:custom:m]'
+-  file_extensions: 'mov mp4'
+-  max_filesize: ''
+-  description_field: false
+-  handler: 'default:file'
+-  handler_settings: {  }
+-field_type: file
+diff --git a/modules/layout_builder_kit_demo/config/install/field.field.node.lbk_example.field_video_link.yml b/modules/layout_builder_kit_demo/config/install/field.field.node.lbk_example.field_video_link.yml
+deleted file mode 100644
+index f485656..0000000
+--- a/modules/layout_builder_kit_demo/config/install/field.field.node.lbk_example.field_video_link.yml
++++ /dev/null
+@@ -1,23 +0,0 @@
+-uuid: f1e0a547-240d-4974-a02c-b2c309b2615a
+-langcode: en
+-status: true
+-dependencies:
+-  config:
+-    - field.storage.node.field_video_link
+-    - node.type.lbk_example
+-  module:
+-    - link
+-id: node.lbk_example.field_video_link
+-field_name: field_video_link
+-entity_type: node
+-bundle: lbk_example
+-label: 'Video Link'
+-description: ''
+-required: false
+-translatable: false
+-default_value: {  }
+-default_value_callback: ''
+-settings:
+-  link_type: 17
+-  title: 1
+-field_type: link
+diff --git a/modules/layout_builder_kit_demo/config/install/field.field.node.lbk_example.field_video_text_formatted.yml b/modules/layout_builder_kit_demo/config/install/field.field.node.lbk_example.field_video_text_formatted.yml
+deleted file mode 100644
+index 85e266b..0000000
+--- a/modules/layout_builder_kit_demo/config/install/field.field.node.lbk_example.field_video_text_formatted.yml
++++ /dev/null
+@@ -1,21 +0,0 @@
+-uuid: b5ecee94-de18-40cb-a4c5-7869af1a45c2
+-langcode: en
+-status: true
+-dependencies:
+-  config:
+-    - field.storage.node.field_video_text_formatted
+-    - node.type.lbk_example
+-  module:
+-    - text
+-id: node.lbk_example.field_video_text_formatted
+-field_name: field_video_text_formatted
+-entity_type: node
+-bundle: lbk_example
+-label: 'Video Text Formatted'
+-description: ''
+-required: false
+-translatable: false
+-default_value: {  }
+-default_value_callback: ''
+-settings: {  }
+-field_type: text
+diff --git a/modules/layout_builder_kit_demo/config/install/field.field.node.lbk_example.field_video_text_plain.yml b/modules/layout_builder_kit_demo/config/install/field.field.node.lbk_example.field_video_text_plain.yml
+deleted file mode 100644
+index 0417b00..0000000
+--- a/modules/layout_builder_kit_demo/config/install/field.field.node.lbk_example.field_video_text_plain.yml
++++ /dev/null
+@@ -1,19 +0,0 @@
+-uuid: ee715663-7d1a-42a7-bb7f-bb4876e433cc
+-langcode: en
+-status: true
+-dependencies:
+-  config:
+-    - field.storage.node.field_video_text_plain
+-    - node.type.lbk_example
+-id: node.lbk_example.field_video_text_plain
+-field_name: field_video_text_plain
+-entity_type: node
+-bundle: lbk_example
+-label: 'Video Text Plain'
+-description: ''
+-required: false
+-translatable: false
+-default_value: {  }
+-default_value_callback: ''
+-settings: {  }
+-field_type: string
+diff --git a/modules/layout_builder_kit_demo/config/install/field.field.node.lbk_example.layout_builder__layout.yml b/modules/layout_builder_kit_demo/config/install/field.field.node.lbk_example.layout_builder__layout.yml
+deleted file mode 100644
+index 30bd6f3..0000000
+--- a/modules/layout_builder_kit_demo/config/install/field.field.node.lbk_example.layout_builder__layout.yml
++++ /dev/null
+@@ -1,21 +0,0 @@
+-uuid: c9baa29c-c8c8-47b4-ba31-e73fac04cb9f
+-langcode: en
+-status: true
+-dependencies:
+-  config:
+-    - field.storage.node.layout_builder__layout
+-    - node.type.lbk_example
+-  module:
+-    - layout_builder
+-id: node.lbk_example.layout_builder__layout
+-field_name: layout_builder__layout
+-entity_type: node
+-bundle: lbk_example
+-label: Layout
+-description: ''
+-required: false
+-translatable: false
+-default_value: {  }
+-default_value_callback: ''
+-settings: {  }
+-field_type: layout_section
+diff --git a/modules/layout_builder_kit_demo/config/install/field.storage.node.field_book_description.yml b/modules/layout_builder_kit_demo/config/install/field.storage.node.field_book_description.yml
+deleted file mode 100644
+index b2811dd..0000000
+--- a/modules/layout_builder_kit_demo/config/install/field.storage.node.field_book_description.yml
++++ /dev/null
+@@ -1,20 +0,0 @@
+-uuid: 929d684e-3f1c-4c99-8483-ab2bfe70ec7d
+-langcode: en
+-status: true
+-dependencies:
+-  module:
+-    - node
+-    - text
+-id: node.field_book_description
+-field_name: field_book_description
+-entity_type: node
+-type: text
+-settings:
+-  max_length: 255
+-module: text
+-locked: false
+-cardinality: 1
+-translatable: true
+-indexes: {  }
+-persist_with_no_fields: false
+-custom_storage: false
+diff --git a/modules/layout_builder_kit_demo/config/install/field.storage.node.field_video_file.yml b/modules/layout_builder_kit_demo/config/install/field.storage.node.field_video_file.yml
+deleted file mode 100644
+index 93e86ac..0000000
+--- a/modules/layout_builder_kit_demo/config/install/field.storage.node.field_video_file.yml
++++ /dev/null
+@@ -1,25 +0,0 @@
+-uuid: b08f496a-cfca-4434-b042-542947c36e6f
+-langcode: en
+-status: true
+-dependencies:
+-  module:
+-    - file
+-    - node
+-_core:
+-  default_config_hash: l_klZxVM1ix6DYa0Q1bTDvosu5CPmPO9AI7G3BSgSgs
+-id: node.field_video_file
+-field_name: field_video_file
+-entity_type: node
+-type: file
+-settings:
+-  display_field: false
+-  display_default: false
+-  uri_scheme: public
+-  target_type: file
+-module: file
+-locked: false
+-cardinality: 1
+-translatable: true
+-indexes: {  }
+-persist_with_no_fields: false
+-custom_storage: false
+diff --git a/modules/layout_builder_kit_demo/config/install/field.storage.node.field_video_link.yml b/modules/layout_builder_kit_demo/config/install/field.storage.node.field_video_link.yml
+deleted file mode 100644
+index 03566ea..0000000
+--- a/modules/layout_builder_kit_demo/config/install/field.storage.node.field_video_link.yml
++++ /dev/null
+@@ -1,19 +0,0 @@
+-uuid: f663269c-efc5-459e-9719-5cce87de6f65
+-langcode: en
+-status: true
+-dependencies:
+-  module:
+-    - link
+-    - node
+-id: node.field_video_link
+-field_name: field_video_link
+-entity_type: node
+-type: link
+-settings: {  }
+-module: link
+-locked: false
+-cardinality: 1
+-translatable: true
+-indexes: {  }
+-persist_with_no_fields: false
+-custom_storage: false
+diff --git a/modules/layout_builder_kit_demo/config/install/field.storage.node.field_video_text_formatted.yml b/modules/layout_builder_kit_demo/config/install/field.storage.node.field_video_text_formatted.yml
+deleted file mode 100644
+index 64f9787..0000000
+--- a/modules/layout_builder_kit_demo/config/install/field.storage.node.field_video_text_formatted.yml
++++ /dev/null
+@@ -1,20 +0,0 @@
+-uuid: d080b382-929a-4290-833e-ab273086ff1e
+-langcode: en
+-status: true
+-dependencies:
+-  module:
+-    - node
+-    - text
+-id: node.field_video_text_formatted
+-field_name: field_video_text_formatted
+-entity_type: node
+-type: text
+-settings:
+-  max_length: 255
+-module: text
+-locked: false
+-cardinality: 1
+-translatable: true
+-indexes: {  }
+-persist_with_no_fields: false
+-custom_storage: false
+diff --git a/modules/layout_builder_kit_demo/config/install/field.storage.node.field_video_text_plain.yml b/modules/layout_builder_kit_demo/config/install/field.storage.node.field_video_text_plain.yml
+deleted file mode 100644
+index 0395a79..0000000
+--- a/modules/layout_builder_kit_demo/config/install/field.storage.node.field_video_text_plain.yml
++++ /dev/null
+@@ -1,21 +0,0 @@
+-uuid: 097f502f-076f-4236-913a-1d9b50dffc69
+-langcode: en
+-status: true
+-dependencies:
+-  module:
+-    - node
+-id: node.field_video_text_plain
+-field_name: field_video_text_plain
+-entity_type: node
+-type: string
+-settings:
+-  max_length: 255
+-  is_ascii: false
+-  case_sensitive: false
+-module: core
+-locked: false
+-cardinality: 1
+-translatable: true
+-indexes: {  }
+-persist_with_no_fields: false
+-custom_storage: false
+diff --git a/modules/layout_builder_kit_demo/config/install/field.storage.node.layout_builder__layout.yml b/modules/layout_builder_kit_demo/config/install/field.storage.node.layout_builder__layout.yml
+deleted file mode 100644
+index b29c048..0000000
+--- a/modules/layout_builder_kit_demo/config/install/field.storage.node.layout_builder__layout.yml
++++ /dev/null
+@@ -1,19 +0,0 @@
+-uuid: 8a319dbc-c7cf-4807-b4ff-b09fa2122082
+-langcode: en
+-status: true
+-dependencies:
+-  module:
+-    - layout_builder
+-    - node
+-id: node.layout_builder__layout
+-field_name: layout_builder__layout
+-entity_type: node
+-type: layout_section
+-settings: {  }
+-module: layout_builder
+-locked: true
+-cardinality: 1
+-translatable: false
+-indexes: {  }
+-persist_with_no_fields: false
+-custom_storage: false
+diff --git a/modules/layout_builder_kit_demo/config/install/node.type.lbk_example.yml b/modules/layout_builder_kit_demo/config/install/node.type.lbk_example.yml
+deleted file mode 100644
+index ec5a5c2..0000000
+--- a/modules/layout_builder_kit_demo/config/install/node.type.lbk_example.yml
++++ /dev/null
+@@ -1,18 +0,0 @@
+-uuid: 82c33f0b-3556-4356-97da-40f45194b1a6
+-langcode: en
+-status: true
+-dependencies:
+-  module:
+-    - menu_ui
+-third_party_settings:
+-  menu_ui:
+-    available_menus:
+-      - main
+-    parent: 'main:'
+-name: 'LBK Example'
+-type: lbk_example
+-description: ''
+-help: ''
+-new_revision: true
+-preview_mode: 1
+-display_submitted: true
+diff --git a/modules/layout_builder_kit_demo/config/node.type.book.yml b/modules/layout_builder_kit_demo/config/node.type.book.yml
+deleted file mode 100644
+index 66b0ccd..0000000
+--- a/modules/layout_builder_kit_demo/config/node.type.book.yml
++++ /dev/null
+@@ -1,16 +0,0 @@
+-uuid: d73b2551-c840-4ab7-b21b-dc0969ce4fff
+-langcode: en
+-status: true
+-dependencies:
+-  enforced:
+-    module:
+-      - book
+-_core:
+-  default_config_hash: 2gWGA-X4ERc4McStS7cMEG3ZBpDEqfNRDPTjB1v674Y
+-name: 'Book page'
+-type: book
+-description: '<em>Books</em> have a built-in hierarchical navigation. Use for handbooks or tutorials.'
+-help: ''
+-new_revision: true
+-preview_mode: 1
+-display_submitted: true
+diff --git a/modules/layout_builder_kit_demo/content/node/31b367b9-0ca1-42a4-ab4d-2efc01456f1e.json b/modules/layout_builder_kit_demo/content/node/31b367b9-0ca1-42a4-ab4d-2efc01456f1e.json
+deleted file mode 100644
+index 0c8b484..0000000
+--- a/modules/layout_builder_kit_demo/content/node/31b367b9-0ca1-42a4-ab4d-2efc01456f1e.json
++++ /dev/null
+@@ -1,148 +0,0 @@
+-{
+-    "_links": {
+-        "self": {
+-            "href": "http:\/\/default\/node\/7?_format=hal_json"
+-        },
+-        "type": {
+-            "href": "http:\/\/drupal.org\/rest\/type\/node\/book"
+-        },
+-        "http:\/\/drupal.org\/rest\/relation\/node\/book\/revision_uid": [
+-            {
+-                "href": "http:\/\/default\/user\/1?_format=hal_json"
+-            }
+-        ],
+-        "http:\/\/drupal.org\/rest\/relation\/node\/book\/uid": [
+-            {
+-                "href": "http:\/\/default\/user\/1?_format=hal_json",
+-                "lang": "en"
+-            }
+-        ]
+-    },
+-    "nid": [
+-        {
+-            "value": 7
+-        }
+-    ],
+-    "uuid": [
+-        {
+-            "value": "31b367b9-0ca1-42a4-ab4d-2efc01456f1e"
+-        }
+-    ],
+-    "vid": [
+-        {
+-            "value": 7
+-        }
+-    ],
+-    "langcode": [
+-        {
+-            "value": "en",
+-            "lang": "en"
+-        }
+-    ],
+-    "type": [
+-        {
+-            "target_id": "book"
+-        }
+-    ],
+-    "revision_timestamp": [
+-        {
+-            "value": "2019-10-17T01:13:18+00:00",
+-            "format": "Y-m-d\\TH:i:sP"
+-        }
+-    ],
+-    "_embedded": {
+-        "http:\/\/drupal.org\/rest\/relation\/node\/book\/revision_uid": [
+-            {
+-                "_links": {
+-                    "self": {
+-                        "href": "http:\/\/default\/user\/1?_format=hal_json"
+-                    },
+-                    "type": {
+-                        "href": "http:\/\/drupal.org\/rest\/type\/user\/user"
+-                    }
+-                },
+-                "uuid": [
+-                    {
+-                        "value": "3c33d3e9-261a-4cdb-a047-c52dfdf24de1"
+-                    }
+-                ]
+-            }
+-        ],
+-        "http:\/\/drupal.org\/rest\/relation\/node\/book\/uid": [
+-            {
+-                "_links": {
+-                    "self": {
+-                        "href": "http:\/\/default\/user\/1?_format=hal_json"
+-                    },
+-                    "type": {
+-                        "href": "http:\/\/drupal.org\/rest\/type\/user\/user"
+-                    }
+-                },
+-                "uuid": [
+-                    {
+-                        "value": "3c33d3e9-261a-4cdb-a047-c52dfdf24de1"
+-                    }
+-                ],
+-                "lang": "en"
+-            }
+-        ]
+-    },
+-    "status": [
+-        {
+-            "value": true,
+-            "lang": "en"
+-        }
+-    ],
+-    "title": [
+-        {
+-            "value": "Page 4",
+-            "lang": "en"
+-        }
+-    ],
+-    "created": [
+-        {
+-            "value": "2019-10-17T01:13:05+00:00",
+-            "lang": "en",
+-            "format": "Y-m-d\\TH:i:sP"
+-        }
+-    ],
+-    "changed": [
+-        {
+-            "value": "2019-10-17T01:13:18+00:00",
+-            "lang": "en",
+-            "format": "Y-m-d\\TH:i:sP"
+-        }
+-    ],
+-    "promote": [
+-        {
+-            "value": false,
+-            "lang": "en"
+-        }
+-    ],
+-    "sticky": [
+-        {
+-            "value": false,
+-            "lang": "en"
+-        }
+-    ],
+-    "default_langcode": [
+-        {
+-            "value": true,
+-            "lang": "en"
+-        }
+-    ],
+-    "revision_translation_affected": [
+-        {
+-            "value": true,
+-            "lang": "en"
+-        }
+-    ],
+-    "path": [
+-        {
+-            "alias": null,
+-            "pid": null,
+-            "langcode": "en",
+-            "lang": "en"
+-        }
+-    ]
+-}
+\ No newline at end of file
+diff --git a/modules/layout_builder_kit_demo/content/node/423c2146-a537-4d5b-b257-f5129cdf91f8.json b/modules/layout_builder_kit_demo/content/node/423c2146-a537-4d5b-b257-f5129cdf91f8.json
+deleted file mode 100644
+index af74179..0000000
+--- a/modules/layout_builder_kit_demo/content/node/423c2146-a537-4d5b-b257-f5129cdf91f8.json
++++ /dev/null
+@@ -1,148 +0,0 @@
+-{
+-    "_links": {
+-        "self": {
+-            "href": "http:\/\/default\/node\/6?_format=hal_json"
+-        },
+-        "type": {
+-            "href": "http:\/\/drupal.org\/rest\/type\/node\/book"
+-        },
+-        "http:\/\/drupal.org\/rest\/relation\/node\/book\/revision_uid": [
+-            {
+-                "href": "http:\/\/default\/user\/1?_format=hal_json"
+-            }
+-        ],
+-        "http:\/\/drupal.org\/rest\/relation\/node\/book\/uid": [
+-            {
+-                "href": "http:\/\/default\/user\/1?_format=hal_json",
+-                "lang": "en"
+-            }
+-        ]
+-    },
+-    "nid": [
+-        {
+-            "value": 6
+-        }
+-    ],
+-    "uuid": [
+-        {
+-            "value": "423c2146-a537-4d5b-b257-f5129cdf91f8"
+-        }
+-    ],
+-    "vid": [
+-        {
+-            "value": 6
+-        }
+-    ],
+-    "langcode": [
+-        {
+-            "value": "en",
+-            "lang": "en"
+-        }
+-    ],
+-    "type": [
+-        {
+-            "target_id": "book"
+-        }
+-    ],
+-    "revision_timestamp": [
+-        {
+-            "value": "2019-10-17T01:12:59+00:00",
+-            "format": "Y-m-d\\TH:i:sP"
+-        }
+-    ],
+-    "_embedded": {
+-        "http:\/\/drupal.org\/rest\/relation\/node\/book\/revision_uid": [
+-            {
+-                "_links": {
+-                    "self": {
+-                        "href": "http:\/\/default\/user\/1?_format=hal_json"
+-                    },
+-                    "type": {
+-                        "href": "http:\/\/drupal.org\/rest\/type\/user\/user"
+-                    }
+-                },
+-                "uuid": [
+-                    {
+-                        "value": "3c33d3e9-261a-4cdb-a047-c52dfdf24de1"
+-                    }
+-                ]
+-            }
+-        ],
+-        "http:\/\/drupal.org\/rest\/relation\/node\/book\/uid": [
+-            {
+-                "_links": {
+-                    "self": {
+-                        "href": "http:\/\/default\/user\/1?_format=hal_json"
+-                    },
+-                    "type": {
+-                        "href": "http:\/\/drupal.org\/rest\/type\/user\/user"
+-                    }
+-                },
+-                "uuid": [
+-                    {
+-                        "value": "3c33d3e9-261a-4cdb-a047-c52dfdf24de1"
+-                    }
+-                ],
+-                "lang": "en"
+-            }
+-        ]
+-    },
+-    "status": [
+-        {
+-            "value": true,
+-            "lang": "en"
+-        }
+-    ],
+-    "title": [
+-        {
+-            "value": "Page 3",
+-            "lang": "en"
+-        }
+-    ],
+-    "created": [
+-        {
+-            "value": "2019-10-17T01:12:45+00:00",
+-            "lang": "en",
+-            "format": "Y-m-d\\TH:i:sP"
+-        }
+-    ],
+-    "changed": [
+-        {
+-            "value": "2019-10-17T01:12:59+00:00",
+-            "lang": "en",
+-            "format": "Y-m-d\\TH:i:sP"
+-        }
+-    ],
+-    "promote": [
+-        {
+-            "value": false,
+-            "lang": "en"
+-        }
+-    ],
+-    "sticky": [
+-        {
+-            "value": false,
+-            "lang": "en"
+-        }
+-    ],
+-    "default_langcode": [
+-        {
+-            "value": true,
+-            "lang": "en"
+-        }
+-    ],
+-    "revision_translation_affected": [
+-        {
+-            "value": true,
+-            "lang": "en"
+-        }
+-    ],
+-    "path": [
+-        {
+-            "alias": null,
+-            "pid": null,
+-            "langcode": "en",
+-            "lang": "en"
+-        }
+-    ]
+-}
+\ No newline at end of file
+diff --git a/modules/layout_builder_kit_demo/content/node/5112989e-4ef4-4fad-b9ce-864a59ade000.json b/modules/layout_builder_kit_demo/content/node/5112989e-4ef4-4fad-b9ce-864a59ade000.json
+deleted file mode 100644
+index 6c43e86..0000000
+--- a/modules/layout_builder_kit_demo/content/node/5112989e-4ef4-4fad-b9ce-864a59ade000.json
++++ /dev/null
+@@ -1,148 +0,0 @@
+-{
+-    "_links": {
+-        "self": {
+-            "href": "http:\/\/default\/node\/5?_format=hal_json"
+-        },
+-        "type": {
+-            "href": "http:\/\/drupal.org\/rest\/type\/node\/book"
+-        },
+-        "http:\/\/drupal.org\/rest\/relation\/node\/book\/revision_uid": [
+-            {
+-                "href": "http:\/\/default\/user\/1?_format=hal_json"
+-            }
+-        ],
+-        "http:\/\/drupal.org\/rest\/relation\/node\/book\/uid": [
+-            {
+-                "href": "http:\/\/default\/user\/1?_format=hal_json",
+-                "lang": "en"
+-            }
+-        ]
+-    },
+-    "nid": [
+-        {
+-            "value": 5
+-        }
+-    ],
+-    "uuid": [
+-        {
+-            "value": "5112989e-4ef4-4fad-b9ce-864a59ade000"
+-        }
+-    ],
+-    "vid": [
+-        {
+-            "value": 5
+-        }
+-    ],
+-    "langcode": [
+-        {
+-            "value": "en",
+-            "lang": "en"
+-        }
+-    ],
+-    "type": [
+-        {
+-            "target_id": "book"
+-        }
+-    ],
+-    "revision_timestamp": [
+-        {
+-            "value": "2019-10-17T01:12:40+00:00",
+-            "format": "Y-m-d\\TH:i:sP"
+-        }
+-    ],
+-    "_embedded": {
+-        "http:\/\/drupal.org\/rest\/relation\/node\/book\/revision_uid": [
+-            {
+-                "_links": {
+-                    "self": {
+-                        "href": "http:\/\/default\/user\/1?_format=hal_json"
+-                    },
+-                    "type": {
+-                        "href": "http:\/\/drupal.org\/rest\/type\/user\/user"
+-                    }
+-                },
+-                "uuid": [
+-                    {
+-                        "value": "3c33d3e9-261a-4cdb-a047-c52dfdf24de1"
+-                    }
+-                ]
+-            }
+-        ],
+-        "http:\/\/drupal.org\/rest\/relation\/node\/book\/uid": [
+-            {
+-                "_links": {
+-                    "self": {
+-                        "href": "http:\/\/default\/user\/1?_format=hal_json"
+-                    },
+-                    "type": {
+-                        "href": "http:\/\/drupal.org\/rest\/type\/user\/user"
+-                    }
+-                },
+-                "uuid": [
+-                    {
+-                        "value": "3c33d3e9-261a-4cdb-a047-c52dfdf24de1"
+-                    }
+-                ],
+-                "lang": "en"
+-            }
+-        ]
+-    },
+-    "status": [
+-        {
+-            "value": true,
+-            "lang": "en"
+-        }
+-    ],
+-    "title": [
+-        {
+-            "value": "Page 2",
+-            "lang": "en"
+-        }
+-    ],
+-    "created": [
+-        {
+-            "value": "2019-10-17T01:12:27+00:00",
+-            "lang": "en",
+-            "format": "Y-m-d\\TH:i:sP"
+-        }
+-    ],
+-    "changed": [
+-        {
+-            "value": "2019-10-17T01:12:40+00:00",
+-            "lang": "en",
+-            "format": "Y-m-d\\TH:i:sP"
+-        }
+-    ],
+-    "promote": [
+-        {
+-            "value": false,
+-            "lang": "en"
+-        }
+-    ],
+-    "sticky": [
+-        {
+-            "value": false,
+-            "lang": "en"
+-        }
+-    ],
+-    "default_langcode": [
+-        {
+-            "value": true,
+-            "lang": "en"
+-        }
+-    ],
+-    "revision_translation_affected": [
+-        {
+-            "value": true,
+-            "lang": "en"
+-        }
+-    ],
+-    "path": [
+-        {
+-            "alias": null,
+-            "pid": null,
+-            "langcode": "en",
+-            "lang": "en"
+-        }
+-    ]
+-}
+\ No newline at end of file
+diff --git a/modules/layout_builder_kit_demo/content/node/77c67a35-27a7-4bc8-ac71-b04794a01f29.json b/modules/layout_builder_kit_demo/content/node/77c67a35-27a7-4bc8-ac71-b04794a01f29.json
+deleted file mode 100644
+index 456f4f3..0000000
+--- a/modules/layout_builder_kit_demo/content/node/77c67a35-27a7-4bc8-ac71-b04794a01f29.json
++++ /dev/null
+@@ -1,148 +0,0 @@
+-{
+-    "_links": {
+-        "self": {
+-            "href": "http:\/\/default\/node\/3?_format=hal_json"
+-        },
+-        "type": {
+-            "href": "http:\/\/drupal.org\/rest\/type\/node\/book"
+-        },
+-        "http:\/\/drupal.org\/rest\/relation\/node\/book\/revision_uid": [
+-            {
+-                "href": "http:\/\/default\/user\/1?_format=hal_json"
+-            }
+-        ],
+-        "http:\/\/drupal.org\/rest\/relation\/node\/book\/uid": [
+-            {
+-                "href": "http:\/\/default\/user\/1?_format=hal_json",
+-                "lang": "en"
+-            }
+-        ]
+-    },
+-    "nid": [
+-        {
+-            "value": 3
+-        }
+-    ],
+-    "uuid": [
+-        {
+-            "value": "77c67a35-27a7-4bc8-ac71-b04794a01f29"
+-        }
+-    ],
+-    "vid": [
+-        {
+-            "value": 3
+-        }
+-    ],
+-    "langcode": [
+-        {
+-            "value": "en",
+-            "lang": "en"
+-        }
+-    ],
+-    "type": [
+-        {
+-            "target_id": "book"
+-        }
+-    ],
+-    "revision_timestamp": [
+-        {
+-            "value": "2019-10-17T01:11:06+00:00",
+-            "format": "Y-m-d\\TH:i:sP"
+-        }
+-    ],
+-    "_embedded": {
+-        "http:\/\/drupal.org\/rest\/relation\/node\/book\/revision_uid": [
+-            {
+-                "_links": {
+-                    "self": {
+-                        "href": "http:\/\/default\/user\/1?_format=hal_json"
+-                    },
+-                    "type": {
+-                        "href": "http:\/\/drupal.org\/rest\/type\/user\/user"
+-                    }
+-                },
+-                "uuid": [
+-                    {
+-                        "value": "3c33d3e9-261a-4cdb-a047-c52dfdf24de1"
+-                    }
+-                ]
+-            }
+-        ],
+-        "http:\/\/drupal.org\/rest\/relation\/node\/book\/uid": [
+-            {
+-                "_links": {
+-                    "self": {
+-                        "href": "http:\/\/default\/user\/1?_format=hal_json"
+-                    },
+-                    "type": {
+-                        "href": "http:\/\/drupal.org\/rest\/type\/user\/user"
+-                    }
+-                },
+-                "uuid": [
+-                    {
+-                        "value": "3c33d3e9-261a-4cdb-a047-c52dfdf24de1"
+-                    }
+-                ],
+-                "lang": "en"
+-            }
+-        ]
+-    },
+-    "status": [
+-        {
+-            "value": true,
+-            "lang": "en"
+-        }
+-    ],
+-    "title": [
+-        {
+-            "value": "Chapter 2",
+-            "lang": "en"
+-        }
+-    ],
+-    "created": [
+-        {
+-            "value": "2019-10-17T01:10:52+00:00",
+-            "lang": "en",
+-            "format": "Y-m-d\\TH:i:sP"
+-        }
+-    ],
+-    "changed": [
+-        {
+-            "value": "2019-10-17T01:11:06+00:00",
+-            "lang": "en",
+-            "format": "Y-m-d\\TH:i:sP"
+-        }
+-    ],
+-    "promote": [
+-        {
+-            "value": false,
+-            "lang": "en"
+-        }
+-    ],
+-    "sticky": [
+-        {
+-            "value": false,
+-            "lang": "en"
+-        }
+-    ],
+-    "default_langcode": [
+-        {
+-            "value": true,
+-            "lang": "en"
+-        }
+-    ],
+-    "revision_translation_affected": [
+-        {
+-            "value": true,
+-            "lang": "en"
+-        }
+-    ],
+-    "path": [
+-        {
+-            "alias": null,
+-            "pid": null,
+-            "langcode": "en",
+-            "lang": "en"
+-        }
+-    ]
+-}
+\ No newline at end of file
+diff --git a/modules/layout_builder_kit_demo/content/node/9ad91630-dcc1-4fe9-aaf8-bb7f20db0d14.json b/modules/layout_builder_kit_demo/content/node/9ad91630-dcc1-4fe9-aaf8-bb7f20db0d14.json
+deleted file mode 100644
+index 6fe7ce6..0000000
+--- a/modules/layout_builder_kit_demo/content/node/9ad91630-dcc1-4fe9-aaf8-bb7f20db0d14.json
++++ /dev/null
+@@ -1,148 +0,0 @@
+-{
+-    "_links": {
+-        "self": {
+-            "href": "http:\/\/default\/node\/1?_format=hal_json"
+-        },
+-        "type": {
+-            "href": "http:\/\/drupal.org\/rest\/type\/node\/book"
+-        },
+-        "http:\/\/drupal.org\/rest\/relation\/node\/book\/revision_uid": [
+-            {
+-                "href": "http:\/\/default\/user\/1?_format=hal_json"
+-            }
+-        ],
+-        "http:\/\/drupal.org\/rest\/relation\/node\/book\/uid": [
+-            {
+-                "href": "http:\/\/default\/user\/1?_format=hal_json",
+-                "lang": "en"
+-            }
+-        ]
+-    },
+-    "nid": [
+-        {
+-            "value": 1
+-        }
+-    ],
+-    "uuid": [
+-        {
+-            "value": "9ad91630-dcc1-4fe9-aaf8-bb7f20db0d14"
+-        }
+-    ],
+-    "vid": [
+-        {
+-            "value": 1
+-        }
+-    ],
+-    "langcode": [
+-        {
+-            "value": "en",
+-            "lang": "en"
+-        }
+-    ],
+-    "type": [
+-        {
+-            "target_id": "book"
+-        }
+-    ],
+-    "revision_timestamp": [
+-        {
+-            "value": "2019-10-17T00:16:48+00:00",
+-            "format": "Y-m-d\\TH:i:sP"
+-        }
+-    ],
+-    "_embedded": {
+-        "http:\/\/drupal.org\/rest\/relation\/node\/book\/revision_uid": [
+-            {
+-                "_links": {
+-                    "self": {
+-                        "href": "http:\/\/default\/user\/1?_format=hal_json"
+-                    },
+-                    "type": {
+-                        "href": "http:\/\/drupal.org\/rest\/type\/user\/user"
+-                    }
+-                },
+-                "uuid": [
+-                    {
+-                        "value": "3c33d3e9-261a-4cdb-a047-c52dfdf24de1"
+-                    }
+-                ]
+-            }
+-        ],
+-        "http:\/\/drupal.org\/rest\/relation\/node\/book\/uid": [
+-            {
+-                "_links": {
+-                    "self": {
+-                        "href": "http:\/\/default\/user\/1?_format=hal_json"
+-                    },
+-                    "type": {
+-                        "href": "http:\/\/drupal.org\/rest\/type\/user\/user"
+-                    }
+-                },
+-                "uuid": [
+-                    {
+-                        "value": "3c33d3e9-261a-4cdb-a047-c52dfdf24de1"
+-                    }
+-                ],
+-                "lang": "en"
+-            }
+-        ]
+-    },
+-    "status": [
+-        {
+-            "value": true,
+-            "lang": "en"
+-        }
+-    ],
+-    "title": [
+-        {
+-            "value": "On Computer Languages",
+-            "lang": "en"
+-        }
+-    ],
+-    "created": [
+-        {
+-            "value": "2019-10-17T00:16:09+00:00",
+-            "lang": "en",
+-            "format": "Y-m-d\\TH:i:sP"
+-        }
+-    ],
+-    "changed": [
+-        {
+-            "value": "2019-10-17T00:16:48+00:00",
+-            "lang": "en",
+-            "format": "Y-m-d\\TH:i:sP"
+-        }
+-    ],
+-    "promote": [
+-        {
+-            "value": false,
+-            "lang": "en"
+-        }
+-    ],
+-    "sticky": [
+-        {
+-            "value": false,
+-            "lang": "en"
+-        }
+-    ],
+-    "default_langcode": [
+-        {
+-            "value": true,
+-            "lang": "en"
+-        }
+-    ],
+-    "revision_translation_affected": [
+-        {
+-            "value": true,
+-            "lang": "en"
+-        }
+-    ],
+-    "path": [
+-        {
+-            "alias": null,
+-            "pid": null,
+-            "langcode": "en",
+-            "lang": "en"
+-        }
+-    ]
+-}
+\ No newline at end of file
+diff --git a/modules/layout_builder_kit_demo/content/node/b3dc47d4-1dd9-42f7-a91d-b0665e8d19cc.json b/modules/layout_builder_kit_demo/content/node/b3dc47d4-1dd9-42f7-a91d-b0665e8d19cc.json
+deleted file mode 100644
+index 3b78eca..0000000
+--- a/modules/layout_builder_kit_demo/content/node/b3dc47d4-1dd9-42f7-a91d-b0665e8d19cc.json
++++ /dev/null
+@@ -1,148 +0,0 @@
+-{
+-    "_links": {
+-        "self": {
+-            "href": "http:\/\/default\/node\/4?_format=hal_json"
+-        },
+-        "type": {
+-            "href": "http:\/\/drupal.org\/rest\/type\/node\/book"
+-        },
+-        "http:\/\/drupal.org\/rest\/relation\/node\/book\/revision_uid": [
+-            {
+-                "href": "http:\/\/default\/user\/1?_format=hal_json"
+-            }
+-        ],
+-        "http:\/\/drupal.org\/rest\/relation\/node\/book\/uid": [
+-            {
+-                "href": "http:\/\/default\/user\/1?_format=hal_json",
+-                "lang": "en"
+-            }
+-        ]
+-    },
+-    "nid": [
+-        {
+-            "value": 4
+-        }
+-    ],
+-    "uuid": [
+-        {
+-            "value": "b3dc47d4-1dd9-42f7-a91d-b0665e8d19cc"
+-        }
+-    ],
+-    "vid": [
+-        {
+-            "value": 4
+-        }
+-    ],
+-    "langcode": [
+-        {
+-            "value": "en",
+-            "lang": "en"
+-        }
+-    ],
+-    "type": [
+-        {
+-            "target_id": "book"
+-        }
+-    ],
+-    "revision_timestamp": [
+-        {
+-            "value": "2019-10-17T01:12:21+00:00",
+-            "format": "Y-m-d\\TH:i:sP"
+-        }
+-    ],
+-    "_embedded": {
+-        "http:\/\/drupal.org\/rest\/relation\/node\/book\/revision_uid": [
+-            {
+-                "_links": {
+-                    "self": {
+-                        "href": "http:\/\/default\/user\/1?_format=hal_json"
+-                    },
+-                    "type": {
+-                        "href": "http:\/\/drupal.org\/rest\/type\/user\/user"
+-                    }
+-                },
+-                "uuid": [
+-                    {
+-                        "value": "3c33d3e9-261a-4cdb-a047-c52dfdf24de1"
+-                    }
+-                ]
+-            }
+-        ],
+-        "http:\/\/drupal.org\/rest\/relation\/node\/book\/uid": [
+-            {
+-                "_links": {
+-                    "self": {
+-                        "href": "http:\/\/default\/user\/1?_format=hal_json"
+-                    },
+-                    "type": {
+-                        "href": "http:\/\/drupal.org\/rest\/type\/user\/user"
+-                    }
+-                },
+-                "uuid": [
+-                    {
+-                        "value": "3c33d3e9-261a-4cdb-a047-c52dfdf24de1"
+-                    }
+-                ],
+-                "lang": "en"
+-            }
+-        ]
+-    },
+-    "status": [
+-        {
+-            "value": true,
+-            "lang": "en"
+-        }
+-    ],
+-    "title": [
+-        {
+-            "value": "Page 1",
+-            "lang": "en"
+-        }
+-    ],
+-    "created": [
+-        {
+-            "value": "2019-10-17T01:11:43+00:00",
+-            "lang": "en",
+-            "format": "Y-m-d\\TH:i:sP"
+-        }
+-    ],
+-    "changed": [
+-        {
+-            "value": "2019-10-17T01:12:21+00:00",
+-            "lang": "en",
+-            "format": "Y-m-d\\TH:i:sP"
+-        }
+-    ],
+-    "promote": [
+-        {
+-            "value": false,
+-            "lang": "en"
+-        }
+-    ],
+-    "sticky": [
+-        {
+-            "value": false,
+-            "lang": "en"
+-        }
+-    ],
+-    "default_langcode": [
+-        {
+-            "value": true,
+-            "lang": "en"
+-        }
+-    ],
+-    "revision_translation_affected": [
+-        {
+-            "value": true,
+-            "lang": "en"
+-        }
+-    ],
+-    "path": [
+-        {
+-            "alias": null,
+-            "pid": null,
+-            "langcode": "en",
+-            "lang": "en"
+-        }
+-    ]
+-}
+\ No newline at end of file
+diff --git a/modules/layout_builder_kit_demo/content/node/c37000f0-5af7-4a19-b997-455c56cff3ca.json b/modules/layout_builder_kit_demo/content/node/c37000f0-5af7-4a19-b997-455c56cff3ca.json
+deleted file mode 100644
+index 8147488..0000000
+--- a/modules/layout_builder_kit_demo/content/node/c37000f0-5af7-4a19-b997-455c56cff3ca.json
++++ /dev/null
+@@ -1,176 +0,0 @@
+-{
+-    "_links": {
+-        "self": {
+-            "href": "http:\/\/default\/node\/8?_format=hal_json"
+-        },
+-        "type": {
+-            "href": "http:\/\/drupal.org\/rest\/type\/node\/lbk_example"
+-        },
+-        "http:\/\/drupal.org\/rest\/relation\/node\/lbk_example\/revision_uid": [
+-            {
+-                "href": "http:\/\/default\/user\/1?_format=hal_json"
+-            }
+-        ],
+-        "http:\/\/drupal.org\/rest\/relation\/node\/lbk_example\/uid": [
+-            {
+-                "href": "http:\/\/default\/user\/1?_format=hal_json",
+-                "lang": "en"
+-            }
+-        ]
+-    },
+-    "nid": [
+-        {
+-            "value": 8
+-        }
+-    ],
+-    "uuid": [
+-        {
+-            "value": "c37000f0-5af7-4a19-b997-455c56cff3ca"
+-        }
+-    ],
+-    "vid": [
+-        {
+-            "value": 17
+-        }
+-    ],
+-    "langcode": [
+-        {
+-            "value": "en",
+-            "lang": "en"
+-        }
+-    ],
+-    "type": [
+-        {
+-            "target_id": "lbk_example"
+-        }
+-    ],
+-    "revision_timestamp": [
+-        {
+-            "value": "2020-03-26T14:52:43+00:00",
+-            "format": "Y-m-d\\TH:i:sP"
+-        }
+-    ],
+-    "_embedded": {
+-        "http:\/\/drupal.org\/rest\/relation\/node\/lbk_example\/revision_uid": [
+-            {
+-                "_links": {
+-                    "self": {
+-                        "href": "http:\/\/default\/user\/1?_format=hal_json"
+-                    },
+-                    "type": {
+-                        "href": "http:\/\/drupal.org\/rest\/type\/user\/user"
+-                    }
+-                },
+-                "uuid": [
+-                    {
+-                        "value": "3c33d3e9-261a-4cdb-a047-c52dfdf24de1"
+-                    }
+-                ]
+-            }
+-        ],
+-        "http:\/\/drupal.org\/rest\/relation\/node\/lbk_example\/uid": [
+-            {
+-                "_links": {
+-                    "self": {
+-                        "href": "http:\/\/default\/user\/1?_format=hal_json"
+-                    },
+-                    "type": {
+-                        "href": "http:\/\/drupal.org\/rest\/type\/user\/user"
+-                    }
+-                },
+-                "uuid": [
+-                    {
+-                        "value": "3c33d3e9-261a-4cdb-a047-c52dfdf24de1"
+-                    }
+-                ],
+-                "lang": "en"
+-            }
+-        ]
+-    },
+-    "status": [
+-        {
+-            "value": true,
+-            "lang": "en"
+-        }
+-    ],
+-    "title": [
+-        {
+-            "value": "Start here",
+-            "lang": "en"
+-        }
+-    ],
+-    "created": [
+-        {
+-            "value": "2019-10-17T18:54:56+00:00",
+-            "lang": "en",
+-            "format": "Y-m-d\\TH:i:sP"
+-        }
+-    ],
+-    "changed": [
+-        {
+-            "value": "2020-03-26T14:52:43+00:00",
+-            "lang": "en",
+-            "format": "Y-m-d\\TH:i:sP"
+-        }
+-    ],
+-    "promote": [
+-        {
+-            "value": true,
+-            "lang": "en"
+-        }
+-    ],
+-    "sticky": [
+-        {
+-            "value": false,
+-            "lang": "en"
+-        }
+-    ],
+-    "default_langcode": [
+-        {
+-            "value": true,
+-            "lang": "en"
+-        }
+-    ],
+-    "revision_translation_affected": [
+-        {
+-            "value": true,
+-            "lang": "en"
+-        }
+-    ],
+-    "path": [
+-        {
+-            "alias": null,
+-            "pid": null,
+-            "langcode": "en",
+-            "lang": "en"
+-        }
+-    ],
+-    "body": [
+-        {
+-            "value": "<p>We are still creating the demo as exporting Layouts is <a href=\"https:\/\/www.drupal.org\/project\/default_content\/issues\/3058547\">not yet supported by Default Content<\/a>.<\/p>\r\n\r\n<p><strong>Developer Notes for Updating the Demo <\/strong><\/p>\r\n\r\n<p><strong>Exporting <\/strong><\/p>\r\n\r\n<ol>\r\n\t<li>Add drush to the local project with: \"drush\/drush\": \"^10\"<\/li>\r\n\t<li>Default Content is already installed. Documentation is here.<\/li>\r\n\t<li>Make changes.<\/li>\r\n\t<li>Export configuration changes (content type, taxonomy) with <strong>drush cex<\/strong>.<\/li>\r\n\t<li>Move changes to layout_builder_kit_demo\/config\/install.<\/li>\r\n\t<li>Find the UUIDs for the nodes and add them to layout_builder_key_demo.info.yml.<\/li>\r\n\t<li>Export content changes with <strong>drush dcem layout_builder_kit_demo <\/strong><\/li>\r\n\t<li>The content files are automatically added to layout_builder_kit_demo\/node.<\/li>\r\n\t<li>Commit. Resetting<\/li>\r\n<\/ol>\r\n\r\n<p>&nbsp;<\/p>\r\n\r\n<p><strong>Resetting<\/strong><\/p>\r\n\r\n<ol>\r\n\t<li>Delete the Book Description field in the Book content type at \/admin\/structure\/types\/manage\/book\/fields.<\/li>\r\n\t<li>Uninstall the demo module:<br \/>\r\n\t<strong>drush pmu -y layout_builder_kit_demo<\/strong><\/li>\r\n\t<li>Delete the existing nodes:<br \/>\r\n\t<strong>drush entity-delete node --all <\/strong><\/li>\r\n\t<li>Re-install Layout Builder Kit Demo:<br \/>\r\n\t<strong>drush e -y layout_builder_kit_demo <\/strong><\/li>\r\n<\/ol>\r\n\r\n<p>OR<\/p>\r\n\r\n<p>Recreate the test harness with: <strong>drush si standard --account-name=admin --account-pass=password --db-url=mysql:\/\/drupal8:drupal8@database\/drupal8 --site-name=\"Layout Builder Kit Project\" --no-interaction<\/strong><\/p>\r\n",
+-            "format": "basic_html",
+-            "processed": "<p>We are still creating the demo as exporting Layouts is <a href=\"https:\/\/www.drupal.org\/project\/default_content\/issues\/3058547\">not yet supported by Default Content<\/a>.<\/p>\n\n<p><strong>Developer Notes for Updating the Demo <\/strong><\/p>\n\n<p><strong>Exporting <\/strong><\/p>\n\n<ol>\n\t<li>Add drush to the local project with: \"drush\/drush\": \"^10\"<\/li>\n\t<li>Default Content is already installed. Documentation is here.<\/li>\n\t<li>Make changes.<\/li>\n\t<li>Export configuration changes (content type, taxonomy) with <strong>drush cex<\/strong>.<\/li>\n\t<li>Move changes to layout_builder_kit_demo\/config\/install.<\/li>\n\t<li>Find the UUIDs for the nodes and add them to layout_builder_key_demo.info.yml.<\/li>\n\t<li>Export content changes with <strong>drush dcem layout_builder_kit_demo <\/strong><\/li>\n\t<li>The content files are automatically added to layout_builder_kit_demo\/node.<\/li>\n\t<li>Commit. Resetting<\/li>\n<\/ol>\n\n<p>\u00a0<\/p>\n\n<p><strong>Resetting<\/strong><\/p>\n\n<ol>\n\t<li>Delete the Book Description field in the Book content type at \/admin\/structure\/types\/manage\/book\/fields.<\/li>\n\t<li>Uninstall the demo module:<br \/>\n\t<strong>drush pmu -y layout_builder_kit_demo<\/strong><\/li>\n\t<li>Delete the existing nodes:<br \/>\n\t<strong>drush entity-delete node --all <\/strong><\/li>\n\t<li>Re-install Layout Builder Kit Demo:<br \/>\n\t<strong>drush e -y layout_builder_kit_demo <\/strong><\/li>\n<\/ol>\n\n<p>OR<\/p>\n\n<p>Recreate the test harness with: <strong>drush si standard --account-name=admin --account-pass=password --db-url=mysql:\/\/drupal8:drupal8@database\/drupal8 --site-name=\"Layout Builder Kit Project\" --no-interaction<\/strong><\/p>",
+-            "summary": "",
+-            "lang": "en"
+-        }
+-    ],
+-    "field_video_link": [
+-        {
+-            "uri": "https:\/\/www.youtube.com\/watch?v=U9a-af_F-0M",
+-            "title": "",
+-            "options": []
+-        }
+-    ],
+-    "field_video_text_formatted": [
+-        {
+-            "value": "https:\/\/www.youtube.com\/watch?v=UA8B2a8mQSU",
+-            "format": "basic_html",
+-            "processed": "https:\/\/www.youtube.com\/watch?v=UA8B2a8mQSU"
+-        }
+-    ],
+-    "field_video_text_plain": [
+-        {
+-            "value": "https:\/\/www.youtube.com\/watch?v=Db-PC_NWLN8"
+-        }
+-    ]
+-}
+\ No newline at end of file
+diff --git a/modules/layout_builder_kit_demo/content/node/f75716d6-2df1-485b-a79d-ce62d111bfd9.json b/modules/layout_builder_kit_demo/content/node/f75716d6-2df1-485b-a79d-ce62d111bfd9.json
+deleted file mode 100644
+index 692453c..0000000
+--- a/modules/layout_builder_kit_demo/content/node/f75716d6-2df1-485b-a79d-ce62d111bfd9.json
++++ /dev/null
+@@ -1,148 +0,0 @@
+-{
+-    "_links": {
+-        "self": {
+-            "href": "http:\/\/default\/node\/2?_format=hal_json"
+-        },
+-        "type": {
+-            "href": "http:\/\/drupal.org\/rest\/type\/node\/book"
+-        },
+-        "http:\/\/drupal.org\/rest\/relation\/node\/book\/revision_uid": [
+-            {
+-                "href": "http:\/\/default\/user\/1?_format=hal_json"
+-            }
+-        ],
+-        "http:\/\/drupal.org\/rest\/relation\/node\/book\/uid": [
+-            {
+-                "href": "http:\/\/default\/user\/1?_format=hal_json",
+-                "lang": "en"
+-            }
+-        ]
+-    },
+-    "nid": [
+-        {
+-            "value": 2
+-        }
+-    ],
+-    "uuid": [
+-        {
+-            "value": "f75716d6-2df1-485b-a79d-ce62d111bfd9"
+-        }
+-    ],
+-    "vid": [
+-        {
+-            "value": 2
+-        }
+-    ],
+-    "langcode": [
+-        {
+-            "value": "en",
+-            "lang": "en"
+-        }
+-    ],
+-    "type": [
+-        {
+-            "target_id": "book"
+-        }
+-    ],
+-    "revision_timestamp": [
+-        {
+-            "value": "2019-10-17T01:10:45+00:00",
+-            "format": "Y-m-d\\TH:i:sP"
+-        }
+-    ],
+-    "_embedded": {
+-        "http:\/\/drupal.org\/rest\/relation\/node\/book\/revision_uid": [
+-            {
+-                "_links": {
+-                    "self": {
+-                        "href": "http:\/\/default\/user\/1?_format=hal_json"
+-                    },
+-                    "type": {
+-                        "href": "http:\/\/drupal.org\/rest\/type\/user\/user"
+-                    }
+-                },
+-                "uuid": [
+-                    {
+-                        "value": "3c33d3e9-261a-4cdb-a047-c52dfdf24de1"
+-                    }
+-                ]
+-            }
+-        ],
+-        "http:\/\/drupal.org\/rest\/relation\/node\/book\/uid": [
+-            {
+-                "_links": {
+-                    "self": {
+-                        "href": "http:\/\/default\/user\/1?_format=hal_json"
+-                    },
+-                    "type": {
+-                        "href": "http:\/\/drupal.org\/rest\/type\/user\/user"
+-                    }
+-                },
+-                "uuid": [
+-                    {
+-                        "value": "3c33d3e9-261a-4cdb-a047-c52dfdf24de1"
+-                    }
+-                ],
+-                "lang": "en"
+-            }
+-        ]
+-    },
+-    "status": [
+-        {
+-            "value": true,
+-            "lang": "en"
+-        }
+-    ],
+-    "title": [
+-        {
+-            "value": "Chapter 1",
+-            "lang": "en"
+-        }
+-    ],
+-    "created": [
+-        {
+-            "value": "2019-10-17T01:10:29+00:00",
+-            "lang": "en",
+-            "format": "Y-m-d\\TH:i:sP"
+-        }
+-    ],
+-    "changed": [
+-        {
+-            "value": "2019-10-17T01:10:45+00:00",
+-            "lang": "en",
+-            "format": "Y-m-d\\TH:i:sP"
+-        }
+-    ],
+-    "promote": [
+-        {
+-            "value": false,
+-            "lang": "en"
+-        }
+-    ],
+-    "sticky": [
+-        {
+-            "value": false,
+-            "lang": "en"
+-        }
+-    ],
+-    "default_langcode": [
+-        {
+-            "value": true,
+-            "lang": "en"
+-        }
+-    ],
+-    "revision_translation_affected": [
+-        {
+-            "value": true,
+-            "lang": "en"
+-        }
+-    ],
+-    "path": [
+-        {
+-            "alias": null,
+-            "pid": null,
+-            "langcode": "en",
+-            "lang": "en"
+-        }
+-    ]
+-}
+\ No newline at end of file
+diff --git a/modules/layout_builder_kit_demo/layout_builder_kit_demo.info.yml b/modules/layout_builder_kit_demo/layout_builder_kit_demo.info.yml
+deleted file mode 100644
+index f0ebcd3..0000000
+--- a/modules/layout_builder_kit_demo/layout_builder_kit_demo.info.yml
++++ /dev/null
+@@ -1,19 +0,0 @@
+-name: 'Layout Builder Kit Demo'
+-type: module
+-description: 'Examples of components in the kit.'
+-core_version_requirement: ^10
+-package: 'Layout Builder Kit'
+-dependencies:
+-  - drupal:default_content
+-  - layout_builder_kit:layout_builder_kit
+-  - drupal:book
+-default_content:
+-  node:
+-    - 9ad91630-dcc1-4fe9-aaf8-bb7f20db0d14
+-    - f75716d6-2df1-485b-a79d-ce62d111bfd9
+-    - 77c67a35-27a7-4bc8-ac71-b04794a01f29
+-    - b3dc47d4-1dd9-42f7-a91d-b0665e8d19cc
+-    - 5112989e-4ef4-4fad-b9ce-864a59ade000
+-    - 423c2146-a537-4d5b-b257-f5129cdf91f8
+-    - 31b367b9-0ca1-42a4-ab4d-2efc01456f1e
+-    - c37000f0-5af7-4a19-b997-455c56cff3ca
+diff --git a/modules/layout_builder_kit_demo/layout_builder_kit_demo.module b/modules/layout_builder_kit_demo/layout_builder_kit_demo.module
+deleted file mode 100644
+index 18ff9d7..0000000
+--- a/modules/layout_builder_kit_demo/layout_builder_kit_demo.module
++++ /dev/null
+@@ -1,42 +0,0 @@
+-<?php
+-
+-/**
+- * @file
+- * Contains layout_builder_kit_demo.module.
+- */
+-
+-use Drupal\Core\Routing\RouteMatchInterface;
+-
+-/**
+- * Implements hook_help().
+- */
+-function layout_builder_kit_demo_help($route_name, RouteMatchInterface $route_match) {
+-  switch ($route_name) {
+-    // Main module help for the layout_builder_kit_demo module.
+-    case 'help.page.layout_builder_kit_demo':
+-      $output = '';
+-      $output .= '<h3>' . t('About') . '</h3>';
+-      $output .= '<p>' . t('Examples of components in the kit.') . '</p>';
+-      return $output;
+-
+-    default:
+-  }
+-}
+-
+-/**
+- * Implements hook_install().
+- */
+-function layout_builder_kit_demo_install() {
+-  $database = \Drupal::database();
+-  $query = $database->query(
+-    "INSERT INTO `book` (`nid`, `bid`, `pid`, `has_children`, `weight`, `depth`, `p1`, `p2`, `p3`, `p4`, `p5`, `p6`, `p7`, `p8`, `p9`)
+-VALUES
+-	(1,1,0,1,0,1,1,0,0,0,0,0,0,0,0),
+-	(2,1,1,1,0,2,1,2,0,0,0,0,0,0,0),
+-	(3,1,1,1,0,2,1,3,0,0,0,0,0,0,0),
+-	(4,1,2,0,0,3,1,2,4,0,0,0,0,0,0),
+-	(5,1,2,0,0,3,1,2,5,0,0,0,0,0,0),
+-	(6,1,3,0,0,3,1,3,6,0,0,0,0,0,0),
+-	(7,1,3,0,0,3,1,3,7,0,0,0,0,0,0);
+-");
+-}
 diff --git a/src/Plugin/Block/LBKBaseComponent.php b/src/Plugin/Block/LBKBaseComponent.php
 index e52fe63..6d87ebf 100644
 --- a/src/Plugin/Block/LBKBaseComponent.php
