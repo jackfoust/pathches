@@ -1,0 +1,20 @@
+diff --git a/src/Plugin/Block/LBKTab/LBKTab.php b/src/Plugin/Block/LBKTab/LBKTab.php
+index 6954f5c..ab5fdf5 100755
+--- a/src/Plugin/Block/LBKTab/LBKTab.php
++++ b/src/Plugin/Block/LBKTab/LBKTab.php
+@@ -190,7 +190,7 @@ class LBKTab extends LBKBaseComponent implements ContainerFactoryPluginInterface
+         $tab_text = '';
+         if (isset($tabs[$i]['text_format']['value'])) $tab_text = $tabs[$i]['text_format']['value'];
+ 
+-        $tab_text_format = '';
++        $tab_text_format = 'full_html';
+         if (isset($tabs[$i]['text_format']['format'])) $tab_text_format = $tabs[$i]['text_format']['format'];
+ 
+         $form['items_fieldset']['items'][$i]['text_format'] = [
+@@ -261,6 +261,7 @@ class LBKTab extends LBKBaseComponent implements ContainerFactoryPluginInterface
+         'wrapper' => 'items-fieldset-wrapper',
+       ],
+       '#weight' => 10,
++      '#access' -> FALSE,
+       '#suffix' => '</div>',
+     ];
