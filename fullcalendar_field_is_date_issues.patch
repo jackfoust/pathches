@@ -1,0 +1,21 @@
+diff --git a/src/Plugin/views/style/FullCalendar.php b/src/Plugin/views/style/FullCalendar.php
+index 38c0eb0..8dfd65a 100644
+--- a/src/Plugin/views/style/FullCalendar.php
++++ b/src/Plugin/views/style/FullCalendar.php
+@@ -16,6 +16,7 @@ use Drupal\Core\Language\LanguageManagerInterface;
+ use Drupal\fullcalendar\Plugin\FullcalendarBase;
+ use Drupal\fullcalendar\Plugin\FullcalendarPluginCollection;
+ use Drupal\fullcalendar\Plugin\fullcalendar\type\OptionsFormHelperTrait;
++use Drupal\views\Plugin\views\field\EntityField;
+ use Drupal\views\Plugin\views\style\StylePluginBase;
+ use Symfony\Component\DependencyInjection\ContainerInterface;
+ 
+@@ -212,7 +213,7 @@ class FullCalendar extends StylePluginBase {
+ 
+     /** @var \Drupal\views\Plugin\views\field\EntityField $field */
+     foreach ($this->view->field as $id => $field) {
+-      if (fullcalendar_field_is_date($field)) {
++      if ($field instanceof EntityField && fullcalendar_field_is_date($field)) {
+         $date_fields[$id] = $labels[$id];
+       }
+     }
