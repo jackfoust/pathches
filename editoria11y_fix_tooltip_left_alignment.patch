@@ -1,0 +1,13 @@
+diff --git a/library/css/editoria11y.css b/library/css/editoria11y.css
+index 4af5160..4d5fcf2 100644
+--- a/library/css/editoria11y.css
++++ b/library/css/editoria11y.css
+@@ -302,7 +302,7 @@ ed11y-element-result {
+   box-shadow: 0 0 1px;
+   padding: 0 .5em;
+   text-align: left;
+-  right: 0;
++  left: 0;
+   white-space: nowrap;
+   width: auto;
+   height: auto;
