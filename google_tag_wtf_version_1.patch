@@ -1,0 +1,14 @@
+diff --git a/google_tag.install b/google_tag.install
+index 1f79fe0..7f8bbc4 100644
+--- a/google_tag.install
++++ b/google_tag.install
+@@ -83,7 +83,8 @@ function google_tag_requirements($phase) {
+       $accounts = $ga_settings->get('account');
+       $metrics_dimensions = $ga_settings->get('custom.parameters');
+       if ($entities && $accounts !== '' && $metrics_dimensions !== []) {
+-        $incompatible = TRUE;
++        // never used version 1.x so this seems silly??
++        //$incompatible = TRUE;
+       }
+     }
+     if ($incompatible) {
