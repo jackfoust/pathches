@@ -1,0 +1,561 @@
+diff --git a/drush.services.yml b/drush.services.yml
+new file mode 100644
+index 00000000..0801b47c
+--- /dev/null
++++ b/drush.services.yml
+@@ -0,0 +1,5 @@
++services:
++  h5p.commands:
++    class: Drupal\h5p\Commands\H5pCommands
++    tags:
++      - { name: drush.command }
+diff --git a/h5p.module b/h5p.module
+index 10b64490..da95f5b4 100644
+--- a/h5p.module
++++ b/h5p.module
+@@ -163,7 +163,7 @@ function h5p_library_info_build() {
+       drop_library_css
+     FROM {h5p_libraries}");
+ 
+-  $libraries_prefix = '/' . H5PDrupal::getRelativeH5PPath() . '/libraries';
++  $libraries_prefix = '/' . H5PDrupal::getH5PLibrariesPath() . '/libraries';
+   foreach ($h5p_libraries as $h5p_library) {
+ 
+     $js = [];
+diff --git a/modules/h5peditor/src/Controller/H5PEditorAJAXController.php b/modules/h5peditor/src/Controller/H5PEditorAJAXController.php
+index 26ac2039..0eccab51 100644
+--- a/modules/h5peditor/src/Controller/H5PEditorAJAXController.php
++++ b/modules/h5peditor/src/Controller/H5PEditorAJAXController.php
+@@ -66,7 +66,7 @@ class H5PEditorAJAXController extends ControllerBase {
+ 
+     $editor = H5PEditorUtilities::getInstance();
+     $editor->ajax->action(\H5PEditorEndpoints::SINGLE_LIBRARY, $machine_name,
+-      $major_version, $minor_version, $language, H5PDrupal::getRelativeH5PPath(), '', filter_input(INPUT_GET, 'default-language')
++    $major_version, $minor_version, $language, H5PDrupal::getH5PLibrariesPath(), H5PDrupal::getRelativeH5PPath(), filter_input(INPUT_GET, 'default-language')
+     );
+ 
+     // Log library loaded
+diff --git a/src/Commands/H5pCommands.php b/src/Commands/H5pCommands.php
+new file mode 100644
+index 00000000..bf27ee3a
+--- /dev/null
++++ b/src/Commands/H5pCommands.php
+@@ -0,0 +1,31 @@
++<?php
++
++namespace Drupal\h5p\Commands;
++
++use Drupal\h5p\H5PLibrarySynchronizer;
++use Drush\Commands\DrushCommands;
++
++/**
++ * Defines Drush commands for H5P.
++ */
++class H5pCommands extends DrushCommands {
++
++  /**
++   * Synchronizes the H5P libraries.
++   *
++   * @command h5p:sync-libraries
++   *
++   * @option force-dependency-save
++   *   Re-saves the dependency information even for libraries that are already
++   *   installed.
++   *
++   * @usage drush h5p:sync-libraries
++   *   Synchronizes the H5P libraries.
++   *
++   * @aliases h5p-sl
++   */
++  public function syncLibraries($options = ['force-dependency-save' => FALSE]) {
++    H5PLibrarySynchronizer::syncLibraries($options['force-dependency-save']);
++  }
++
++}
+diff --git a/src/Controller/H5PEmbed.php b/src/Controller/H5PEmbed.php
+index 5e586239..1833b5da 100644
+--- a/src/Controller/H5PEmbed.php
++++ b/src/Controller/H5PEmbed.php
+@@ -50,7 +50,7 @@ class H5PEmbed extends ControllerBase {
+     // Load dependencies
+     $core = H5PDrupal::getInstance('core');
+     $preloaded_dependencies = $core->loadContentDependencies($id, 'preloaded');
+-    $files = $core->getDependenciesFiles($preloaded_dependencies, H5PDrupal::getRelativeH5PPath());
++    $files = $core->getDependenciesFiles($preloaded_dependencies, H5PDrupal::getH5PLibrariesPath());
+ 
+     // Invoke any alter hooks
+     $library_list = [];
+diff --git a/src/Form/H5PLibraryUploadForm.php b/src/Form/H5PLibraryUploadForm.php
+index e7de02a1..dbd38058 100644
+--- a/src/Form/H5PLibraryUploadForm.php
++++ b/src/Form/H5PLibraryUploadForm.php
+@@ -4,6 +4,7 @@ namespace Drupal\h5p\Form;
+ 
+ use Drupal\Core\File\FileSystemInterface;
+ use Drupal\h5p\H5PDrupal\H5PDrupal;
++use Drupal\h5p\H5PLibrarySynchronizer;
+ use Drupal\Core\Form\FormBase;
+ use Drupal\Core\Form\FormStateInterface;
+ 
+@@ -13,6 +14,11 @@ use Drupal\Core\Form\FormStateInterface;
+  */
+ class H5PLibraryUploadForm extends FormBase {
+ 
++  /**
++   * Whether to rely on the libraries directory, instead of uploads.
++   */
++  protected $hasCustomLibrariesLocation;
++
+   /**
+    * {@inheritdoc}
+    */
+@@ -25,21 +31,27 @@ class H5PLibraryUploadForm extends FormBase {
+    */
+   public function buildForm(array $form, FormStateInterface $form_state) {
+ 
+-    $form['#attributes'] = array(
+-      'enctype' => 'multipart/form-data',
+-      'class' => 'h5p-admin-upload-libraries-form'
+-    );
++    $interface = H5PDrupal::getInstance();
+ 
+-    $form['h5p'] = array(
+-      '#title' => t('H5P'),
+-      '#type' => 'file',
+-      '#description' => t('Here you can upload new libraries or upload updates to existing libraries. Files uploaded here must be in the .h5p file format.')
+-    );
++    $this->hasCustomLibrariesLocation = (bool) $interface->getOption('libraries_directory');
++
++    if (!$this->hasCustomLibrariesLocation) {
++      $form['#attributes'] = array(
++        'enctype' => 'multipart/form-data',
++        'class' => 'h5p-admin-upload-libraries-form'
++      );
++
++      $form['h5p'] = array(
++        '#title' => t('H5P'),
++        '#type' => 'file',
++        '#description' => t('Here you can upload new libraries or upload updates to existing libraries. Files uploaded here must be in the .h5p file format.')
++      );
++    }
+ 
+     $form['actions']['#type'] = 'actions';
+     $form['actions']['submit'] = array(
+       '#type' => 'submit',
+-      '#value' => t('Upload'),
++      '#value' => $this->hasCustomLibrariesLocation ? t('Sync libraries') : t('Upload'),
+     );
+ 
+     return $form;
+@@ -49,15 +61,22 @@ class H5PLibraryUploadForm extends FormBase {
+    * {@inheritdoc}
+    */
+   public function validateForm(array &$form, FormStateInterface $form_state) {
+-    $this->validateH5PFileUpload($form, $form_state);
++    if (!$this->hasCustomLibrariesLocation) {
++      $this->validateH5PFileUpload($form, $form_state);
++    }
+   }
+ 
+   /**
+    * {@inheritdoc}
+    */
+   public function submitForm(array &$form, FormStateInterface $form_state) {
+-    $storage = H5PDrupal::getInstance('storage');
+-    $storage->savePackage(NULL, NULL, TRUE);
++    if ($this->hasCustomLibrariesLocation) {
++      H5PLibrarySynchronizer::syncLibraries();
++    }
++    else {
++      $storage = H5PDrupal::getInstance('storage');
++      $storage->savePackage(NULL, NULL, TRUE);
++    }
+   }
+ 
+   function validateH5PFileUpload(array &$form, FormStateInterface $form_state, $upgradeOnly = FALSE) {
+diff --git a/src/H5PDrupal/H5PDrupal.php b/src/H5PDrupal/H5PDrupal.php
+index 1f501b93..62e3d520 100644
+--- a/src/H5PDrupal/H5PDrupal.php
++++ b/src/H5PDrupal/H5PDrupal.php
+@@ -52,7 +52,9 @@ class H5PDrupal implements \H5PFrameworkInterface {
+ 
+       // Prepare file storage
+       $h5p_path = $interface->getOption('default_path', 'h5p');
+-      $fs = new \H5PDefaultStorage(\Drupal::service('file_system')->realpath("public://{$h5p_path}"));
++      $libraries_directory = $interface->getOption('libraries_directory');
++      $library_path = $libraries_directory ? DRUPAL_ROOT . '/' . $libraries_directory . '/' : NULL;
++      $fs = new H5PDrupalFileStorage(\Drupal::service('file_system')->realpath("public://{$h5p_path}"), NULL, $library_path);
+ 
+       // Determine if exports should be generated
+       $is_export_enabled = !!$interface->getOption('export', TRUE);
+@@ -93,6 +95,15 @@ class H5PDrupal implements \H5PFrameworkInterface {
+     return PublicStream::basePath() . '/' . $interface->getOption('default_path', 'h5p');
+   }
+ 
++  /**
++   * Get the relative URL to the H5P libraries folder.
++   */
++  public static function getH5PLibrariesPath() {
++    $interface = self::getInstance();
++    $library_directory = $interface->getOption('libraries_directory');
++    return $library_directory ? : static::getRelativeH5PPath();
++  }
++
+   /**
+    * Prepares the generic H5PIntegration settings
+    */
+@@ -116,12 +127,14 @@ class H5PDrupal implements \H5PFrameworkInterface {
+     $set_finished_url = Url::fromUri('internal:/h5p-ajax/set-finished.json', ['query' => ['token' => \H5PCore::createToken('result')]])->toString(TRUE)->getGeneratedUrl();
+     $content_user_data_url = Url::fromUri('internal:/h5p-ajax/content-user-data/:contentId/:dataType/:subContentId', ['query' => ['token' => \H5PCore::createToken('contentuserdata')]])->toString(TRUE)->getGeneratedUrl();
+     $h5p_url = base_path() . self::getRelativeH5PPath();
++    $h5p_libraries_url = base_path() . self::getH5PLibrariesPath() . '/libraries';
+ 
+     // Define the generic H5PIntegration settings
+     $core = self::getInstance('core');
+     $settings = array(
+       'baseUrl' => base_path(),
+       'url' => $h5p_url,
++      'urlLibraries' => $h5p_libraries_url,
+       'postUserStatistics' => $user->id() > 0,
+       'ajax' => array(
+         'setFinished' => $set_finished_url,
+@@ -390,7 +403,7 @@ class H5PDrupal implements \H5PFrameworkInterface {
+    */
+   public function getLibraryFileUrl($libraryFolderName, $fileName) {
+     // Misplaced; this is something that Core should be able to handle.
+-    return base_path() . self::getRelativeH5PPath() . "/libraries/{$libraryFolderName}/{$fileName}";
++    return base_path() . self::getH5PLibrariesPath() . "/libraries/{$libraryFolderName}/{$fileName}";
+   }
+ 
+   /**
+@@ -799,7 +812,7 @@ class H5PDrupal implements \H5PFrameworkInterface {
+       [':id' => $libraryId]
+     )->fetchObject();
+ 
+-    // Delete files
++    // Delete files.
+     \H5PCore::deleteFileTree(self::getRelativeH5PPath() . "/libraries/{$library->machine_name}-{$library->major_version}.{$library->minor_version}");
+ 
+     // Delete data in database (won't delete content)
+diff --git a/src/H5PDrupal/H5PDrupalFileStorage.php b/src/H5PDrupal/H5PDrupalFileStorage.php
+new file mode 100644
+index 00000000..b08a6b3b
+--- /dev/null
++++ b/src/H5PDrupal/H5PDrupalFileStorage.php
+@@ -0,0 +1,147 @@
++<?php
++
++namespace Drupal\h5p\H5PDrupal;
++
++use \H5PDefaultStorage;
++use \H5PCore;
++
++class H5PDrupalFileStorage extends H5PDefaultStorage {
++
++  protected $libraryPath;
++
++  public function __construct($path, $alt_editor_path = NULL, $library_path = NULL) {
++    if (isset($library_path)) {
++      $this->libraryPath = $library_path;
++    }
++    else {
++      $this->libraryPath = $path;
++    }
++    parent::__construct($path, $alt_editor_path);
++  }
++
++  /**
++   * {@inheritdoc}
++   */
++  public function saveLibrary($library) {
++    $dest = $this->libraryPath . '/libraries/' . H5PCore::libraryToString($library, TRUE);
++
++    // Make sure destination dir doesn't exist
++    H5PCore::deleteFileTree($dest);
++
++    // Move library folder
++    self::copyFileTree($library['uploadDirectory'], $dest);
++  }
++
++
++  /**
++   * Fetch library folder and save in target directory.
++   *
++   * @param array $library
++   *  Library properties
++   * @param string $target
++   *  Where the library folder will be saved
++   * @param string $developmentPath
++   *  Folder that library resides in
++   */
++  public function exportLibrary($library, $target, $development_path = NULL) {
++    $folder = \H5PCore::libraryToString($library, TRUE);
++
++    $srcPath = (!isset($development_path) ? \rtrim($this->libraryPath, '/') . '/libraries/' . $folder : $development_path);
++    self::copyFileTree($srcPath, "{$target}/{$folder}");
++  }
++
++  /**
++   * Recursive function for copying directories.
++   *
++   * 1-1 copy from the parent class because it's private.
++   *
++   * @param string $source
++   *  From path
++   * @param string $destination
++   *  To path
++   * @return boolean
++   *  Indicates if the directory existed.
++   *
++   * @throws Exception Unable to copy the file
++   */
++  private static function copyFileTree($source, $destination) {
++    if (!self::dirReady($destination)) {
++      throw new \Exception('unabletocopy');
++    }
++
++    $ignoredFiles = self::getIgnoredFiles("{$source}/.h5pignore");
++
++    $dir = opendir($source);
++    if ($dir === FALSE) {
++      trigger_error('Unable to open directory ' . $source, E_USER_WARNING);
++      throw new \Exception('unabletocopy');
++    }
++
++    while (false !== ($file = readdir($dir))) {
++      if (($file != '.') && ($file != '..') && $file != '.git' && $file != '.gitignore' && !in_array($file, $ignoredFiles)) {
++        if (is_dir("{$source}/{$file}")) {
++          self::copyFileTree("{$source}/{$file}", "{$destination}/{$file}");
++        }
++        else {
++          copy("{$source}/{$file}", "{$destination}/{$file}");
++        }
++      }
++    }
++    closedir($dir);
++  }
++
++  /**
++   * Recursive function that makes sure the specified directory exists and
++   * is writable.
++   *
++   * 1-1 copy because it's private.
++   *
++   * @param string $path
++   * @return bool
++   */
++  private static function dirReady($path) {
++    if (!file_exists($path)) {
++      $parent = preg_replace("/\/[^\/]+\/?$/", '', $path);
++      if (!self::dirReady($parent)) {
++        return FALSE;
++      }
++
++      mkdir($path, 0777, true);
++    }
++
++    if (!is_dir($path)) {
++      trigger_error('Path is not a directory ' . $path, E_USER_WARNING);
++      return FALSE;
++    }
++
++    if (!is_writable($path)) {
++      trigger_error('Unable to write to ' . $path . ' â€“ check directory permissions â€“', E_USER_WARNING);
++      return FALSE;
++    }
++
++    return TRUE;
++    }
++
++ /**
++  * Retrieve array of file names from file.
++  *
++  * 1-1 copy due to private.
++  *
++  * @param string $file
++  * @return array Array with files that should be ignored
++  */
++  private static function getIgnoredFiles($file) {
++    if (file_exists($file) === FALSE) {
++      return array();
++    }
++
++    $contents = file_get_contents($file);
++    if ($contents === FALSE) {
++      return array();
++    }
++
++    return preg_split('/\s+/', $contents);
++  }
++
++
++}
+diff --git a/src/H5PLibrarySynchronizer.php b/src/H5PLibrarySynchronizer.php
+new file mode 100644
+index 00000000..466a4ec1
+--- /dev/null
++++ b/src/H5PLibrarySynchronizer.php
+@@ -0,0 +1,134 @@
++<?php
++
++namespace Drupal\h5p;
++
++use Drupal\h5p\H5PDrupal\H5PDrupal;
++use H5PMetadata;
++
++class H5PLibrarySynchronizer {
++
++  /**
++   * Sync libraries from the libraries directory to the database cache.
++   *
++   * @param bool $force_dependency_save
++   *   (optional) Whether to save dependencies even for libraries that are
++   *   already installed. Defaults to FALSE.
++   */
++  public static function syncLibraries($force_dependency_save = FALSE) {
++    $libraries_dir = H5PDrupal::getH5PLibrariesPath();
++    $file_system = \Drupal::service('file_system');
++    $scan = $file_system->scanDirectory($libraries_dir, '/library.json/');
++    $h5p_validator = H5pDrupal::getInstance('validator');
++    $h5p_drupal = H5PDrupal::getInstance();
++    $h5p_core = H5pDrupal::getInstance('core');
++
++    $new_ones = 0;
++    $old_ones = 0;
++    // H5P uploads are designed to deal with zips, however in our case we
++    // already have an unzipped library in the libraries directory. So, use
++    // what we can from the API but otherwise duplicate some basic logic here.
++    // Where a temporary upload directory is required, either pass the library
++    // directory so that files can be found, or workaround things like deletion.
++    foreach ($scan as $uri => $object) {
++      $absolute_uri = DRUPAL_ROOT . '/' .  $uri;
++      $library_string = basename(dirname($uri));
++      $library_data = $h5p_validator->getLibraryData($library_string, dirname($absolute_uri), dirname($absolute_uri, 2));
++      if ($library_data) {
++        $libraries[$library_string] = $library_data;
++      }
++    }
++    foreach ($libraries as $library_string => &$library) {
++      // Logic borrowed from H5PStorage::saveLibraries().
++      //
++      // Assume new library
++      $library_id = $h5p_drupal->getLibraryId($library['machineName'], $library['majorVersion'], $library['minorVersion']);
++
++      $new = TRUE;
++      if ($library_id) {
++        // Found old library
++        $library['libraryId'] = $library_id;
++
++        if ($h5p_drupal->isPatchedLibrary($library)) {
++          // This is a newer version than ours. Upgrade!
++          $new = FALSE;
++        }
++        else {
++          $library['saveDependencies'] = $force_dependency_save;
++          // This is an older version, no need to save.
++          continue;
++        }
++      }
++
++      // Indicate that the dependencies of this library should be saved.
++      $library['saveDependencies'] = TRUE;
++
++      // Convert metadataSettings values to boolean & json_encode it before saving
++      $library['metadataSettings'] = isset($library['metadataSettings']) ?
++        H5PMetadata::boolifyAndEncodeSettings($library['metadataSettings']) :
++        NULL;
++      $h5p_drupal->saveLibraryData($library, $new);
++
++      // Remove cached assets that uses this library
++      if ($h5p_core->aggregateAssets && isset($library['libraryId'])) {
++        $removedKeys = $h5p_drupal->deleteCachedAssets($library['libraryId']);
++        $h5p_drupal->deleteCachedAssets($removedKeys);
++      }
++
++      if ($new) {
++		   $new_ones++;
++      }
++		  else {
++        $old_ones++;
++      }
++		}
++
++    // Go through the libraries again to save dependencies.
++    $library_ids = [];
++    foreach ($libraries as &$library) {
++      if (!$library['saveDependencies']) {
++        continue;
++      }
++
++      // Remove any old dependencies
++      $h5p_drupal->deleteLibraryDependencies($library['libraryId']);
++
++      // Insert the different new ones
++      if (isset($library['preloadedDependencies'])) {
++        $h5p_drupal->saveLibraryDependencies($library['libraryId'], $library['preloadedDependencies'], 'preloaded');
++      }
++      if (isset($library['dynamicDependencies'])) {
++        $h5p_drupal->saveLibraryDependencies($library['libraryId'], $library['dynamicDependencies'], 'dynamic');
++      }
++      if (isset($library['editorDependencies'])) {
++        $h5p_drupal->saveLibraryDependencies($library['libraryId'], $library['editorDependencies'], 'editor');
++      }
++
++      $library_ids[] = $library['libraryId'];
++    }
++
++    // Make sure libraries dependencies, parameter filtering
++    // and export files get regenerated for all content using
++    // these libraries.
++    if (!empty($library_ids)) {
++      $h5p_drupal->clearFilteredParameters($library_ids);
++    }
++
++    // Handle deletions.
++    $deleted = 0;
++    $existing = $h5p_drupal->loadLibraries();
++    foreach ($existing as $library_versions) {
++      foreach ($library_versions as $library) {
++        $key = $library->name . '-' . $library->major_version . '.' . $library->minor_version;
++        if (!array_key_exists($key, $libraries)) {
++          $h5p_drupal->deleteLibrary($library->id);
++        }
++      }
++    }
++
++    // Log results.
++    \Drupal::messenger()->addStatus(t('@added_count new libraries added, @deleted_count deleted.', [
++      '@added_count' => $new_ones,
++      '@deleted_count' => $deleted,
++    ]));
++  }
++}
+diff --git a/src/Plugin/Field/FieldWidget/H5PUploadWidget.php b/src/Plugin/Field/FieldWidget/H5PUploadWidget.php
+index d34a9d71..d3ed2070 100644
+--- a/src/Plugin/Field/FieldWidget/H5PUploadWidget.php
++++ b/src/Plugin/Field/FieldWidget/H5PUploadWidget.php
+@@ -89,6 +89,24 @@ class H5PUploadWidget extends H5PWidgetBase {
+     }
+     $files[0]->delete();
+ 
++    // Check if we have all libraries available.
++    $libraries_data = $validator->h5pC->librariesJsonData;
++    if (is_array($libraries_data) && count($libraries_data) !== 0) {
++      $missing_libraries = [];
++      foreach ($libraries_data as $key => $library_data) {
++        $library = $interface->loadLibrary($library_data['machineName'], $library_data['majorVersion'], $library_data['minorVersion']);
++        if ($library === FALSE) {
++          $missing_libraries[] = $key;
++        }
++      }
++
++      if (count($missing_libraries) !== 0) {
++        $form_state->setError($element, t("Please install the following libraries on the site: @libraries", [
++          '@libraries' => implode(', ', $missing_libraries),
++        ]));
++      }
++    }
++
+     foreach ($validator->h5pC->mainJsonData['preloadedDependencies'] as $dep) {
+       if ($dep['machineName'] === $validator->h5pC->mainJsonData['mainLibrary']) {
+         if ($validator->h5pF->libraryHasUpgrade($dep)) {
