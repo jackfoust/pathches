@@ -1,0 +1,18 @@
+diff --git a/js/coffee.js b/js/coffee.js
+index 0200adb..b457e30 100644
+--- a/js/coffee.js
++++ b/js/coffee.js
+@@ -236,11 +236,11 @@
+   DrupalCoffee.label = $('<label for="coffee-q" class="visually-hidden" />').text(Drupal.t('Query', '', ''));
+   DrupalCoffee.results = $('<div id="coffee-results" />');
+   DrupalCoffee.wrapper = $('<div class="coffee-form-wrapper" />');
+-  DrupalCoffee.form = $('<form id="coffee-form" action="#" />');
++  DrupalCoffee.form = $('<form aria-label="Coffee" id="coffee-form" action="#" />');
+   DrupalCoffee.bg = $('<div id="coffee-bg" />').click(function () {
+     DrupalCoffee.coffee_close();
+   });
+ 
+-  DrupalCoffee.field = $('<input id="coffee-q" type="text" autocomplete="off" />');
++  DrupalCoffee.field = $('<input id="coffee-q" type="text" autocomplete="off" aria-label="Search"/>');
+ 
+ })(jQuery, Drupal, drupalSettings);
