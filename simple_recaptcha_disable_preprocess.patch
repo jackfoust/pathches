@@ -1,0 +1,26 @@
+diff --git a/simple_recaptcha.libraries.yml b/simple_recaptcha.libraries.yml
+index 99f443a..d6f4a96 100644
+--- a/simple_recaptcha.libraries.yml
++++ b/simple_recaptcha.libraries.yml
+@@ -4,8 +4,8 @@
+ simple_recaptcha:
+   version: 1.x
+   js:
+-    js/buttons.js: {}
+-    js/simple_recaptcha.js: {}
++    js/buttons.js: {preprocess: false}
++    js/simple_recaptcha.js: {preprocess: false}
+   dependencies:
+     - core/jquery
+     - core/drupal
+@@ -15,8 +15,8 @@ simple_recaptcha:
+ simple_recaptcha_v3:
+   version: 1.x
+   js:
+-    js/buttons.js: {}
+-    js/simple_recaptcha_v3.js: {}
++    js/buttons.js: {preprocess: false}
++    js/simple_recaptcha_v3.js: {preprocess: false}
+   dependencies:
+     - core/jquery
+     - core/drupal
